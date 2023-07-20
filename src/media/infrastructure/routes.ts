@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { PopulatePlacesController } from "./controllers/PopulatePlacesController";
+import { PopulateMediaController } from "./controllers/PopulateMediaController";
 import connection from "./database/MongoDB";
 
-const placeRoutes = Router();
+const mediaRoutes = Router();
 
-placeRoutes.post("/many", PopulatePlacesController);
+mediaRoutes.post("/many", PopulateMediaController);
 
-export { placeRoutes };
+export { mediaRoutes };
 
 connection;

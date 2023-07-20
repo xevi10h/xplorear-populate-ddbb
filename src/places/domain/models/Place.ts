@@ -1,9 +1,8 @@
 import Address from "./valueObjects/Address";
-import Name from "./valueObjects/Name";
 import IPlace from "./interfaces/IPlace";
 
 export default class Place implements IPlace {
-  id: string;
+  id?: string;
   name: string;
   address: Address;
   description: string;

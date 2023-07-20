@@ -10,7 +10,7 @@ class PopulatePlacesUseCase {
       organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
       apiKey:
         process.env.OPENAI_API_KEY ||
-        "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",
+        "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",
     });
     const openai = new OpenAIApi(configuration);
     try {
@@ -47,7 +47,7 @@ class PopulatePlacesUseCase {
       );
       Array.isArray(placesJSON) &&
         (await Promise.all(
-          placesJSON.map(async (place) => this.placeService.createPlace(place))
+          placesJSON.map(async (place) => this.placeService.createOne(place))
         ));
     } catch (error) {
       console.log("Error", error);

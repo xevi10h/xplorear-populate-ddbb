@@ -5,7 +5,7 @@ import PopulatePlacesDTO from "./populatePlaces/PopulatePlacesDTO";
 class PlaceService {
   constructor(private readonly placeRepository: PlaceRepository) {}
 
-  async createPlace(place: Place): Promise<void> {
+  async createOne(place: Place): Promise<void> {
     await this.placeRepository.create(place);
   }
 }
