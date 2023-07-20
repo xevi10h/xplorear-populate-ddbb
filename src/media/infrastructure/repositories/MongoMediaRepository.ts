@@ -8,6 +8,7 @@ export default class MongoMediaRepository implements MediaRepository {
 
   async create(media: Media): Promise<void> {
     await this.MediaModel.create({
+      _id: media.id,
       ...media,
       placeId: new mongoose.Types.ObjectId(media.placeId),
     });

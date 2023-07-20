@@ -5,13 +5,13 @@ import { mediaRoutes } from "./media/infrastructure/routes";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:8082" }));
+app.use(cors({ origin: "http://localhost:8080" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use("/places", placeRoutes);
 app.use("/media", mediaRoutes);
 
-const port = process.env.PORT || 8082;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 export default app;

@@ -24,7 +24,7 @@ class PopulateMediaUseCase {
       organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
       apiKey:
         process.env.OPENAI_API_KEY ||
-        "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",
+        "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",
     });
     const openai = new OpenAIApi(configuration);
     try {
