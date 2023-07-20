@@ -1,9 +1,7 @@
 import { model, Model, Schema } from "mongoose";
 import IPlace from "../../domain/models/interfaces/IPlace";
-import { v4 } from "uuid";
 
 const placeSchema = new Schema<IPlace>({
-  id: { type: String, default: v4, unique: true },
   name: { type: String, required: true },
   address: {
     coordinates: {
@@ -16,10 +14,9 @@ const placeSchema = new Schema<IPlace>({
     province: { type: String },
     country: { type: String, required: true },
   },
-  description: { type: String, required: true },
-  importance: { type: Number, required: true },
   rating: { type: Number },
   types: { type: [String] },
+  description: { type: String },
 });
 
 export const MongoPlaceModel = model("places", placeSchema);

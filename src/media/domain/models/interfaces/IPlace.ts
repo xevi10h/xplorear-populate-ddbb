@@ -5,8 +5,7 @@ export default interface IPlace {
   id: string;
   name: string;
   address: Address;
+  rating: number;
+  types: string[];
   description: string;
-  importance: number;
-  rating?: number;
-  types?: string[];
 }
