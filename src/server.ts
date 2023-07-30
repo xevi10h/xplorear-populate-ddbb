@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import { placeRoutes } from "./places/infrastructure/routes";
 import { mediaRoutes } from "./media/infrastructure/routes";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 

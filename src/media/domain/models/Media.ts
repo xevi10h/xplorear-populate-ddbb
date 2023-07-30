@@ -9,15 +9,16 @@ export default class Media implements IMedia {
   lang: string;
   rating: number;
   audioUrl: string;
+  voiceId: string;
 
   constructor(media: IMedia) {
     this.id = media.id;
     this.placeId = media.placeId;
     this.title = media.title;
-    this.rating = media.rating;
     this.text = media.text;
     this.lang = media.lang;
     this.rating = media.rating;
     this.audioUrl = media.audioUrl;
+    this.voiceId = media.voiceId;
   }
 }

@@ -8,4 +8,5 @@ export default interface IMedia {
   lang: string;
   rating: number;
   audioUrl: string;
+  voiceId: string;
 }
