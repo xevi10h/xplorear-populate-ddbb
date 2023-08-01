@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
 mongoose.connect(
-  process.env.MONGODB_URI ||
-    "mongodb+srv://xploreartech:XA229er147@cluster0.b0gluyp.mongodb.net/"
+  process.env.MONGODB_URI || "mongodb://root:password@mongo:27017"
 );
 
 const connection = mongoose.connection;

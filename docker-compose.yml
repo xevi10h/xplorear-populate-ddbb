@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  app:
+    container_name: my-app
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    environment:
+      - DEEPL_AUTH_KEY=${DEEPL_AUTH_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
