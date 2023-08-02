@@ -11,6 +11,8 @@ services:
     environment:
       - DEEPL_AUTH_KEY=${DEEPL_AUTH_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ~/.aws:/root/.aws:ro
   mongo:
     container_name: mongo
     image: mongo
