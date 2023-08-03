@@ -25,4 +25,11 @@ export default class MongoPlaceRepository implements PlaceRepository {
   async getAll(): Promise<Place[]> {
     return this.PlaceModel.find().exec();
   }
+
+  async updateById(
+    _id: string,
+    update: Partial<Place>
+  ): Promise<Place | null | undefined> {
+    return this.PlaceModel.findByIdAndUpdate(_id, update);
+  }
 }
