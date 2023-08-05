@@ -8,12 +8,15 @@ export default class LoginUserUseCase {
   constructor(private readonly authService: AuthService) {}
 
   async execute(loginUserDTO: LoginUserDTO): Promise<string> {
-    const { username, password } = loginUserDTO;
-    const user = await this.authService.getByUsername(username);
+    const { emailOrUsername, password } = loginUserDTO;
+    let user = await this.authService.getByUsername(emailOrUsername);
     if (!user) {
-      throw new InvalidCredentialsError(`Invalid credentials`);
+      user = await this.authService.getByEmail(emailOrUsername);
+      if (!user) {
+        throw new InvalidCredentialsError(`Invalid credentials`);
+      }
     }
-    const isMatch = await bcrypt.compare(password, user.hashedPassword);
+    const isMatch = await bcrypt.compare(password, user.hashedPassword || "");
     if (!isMatch) {
       throw new InvalidCredentialsError(`Invalid credentials`);
     }

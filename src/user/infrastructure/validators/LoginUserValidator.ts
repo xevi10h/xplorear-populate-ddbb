@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const loginUserValidator = Joi.object({
-  username: Joi.string().alphanum().min(3).max(30).required(),
+  id: Joi.string(),
   password: Joi.string()
     .min(8)
     .max(30)

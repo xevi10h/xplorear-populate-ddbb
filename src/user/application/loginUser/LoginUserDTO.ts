@@ -1,4 +1,4 @@
 export default interface loginUserDTO {
-  username: string;
+  emailOrUsername: string;
   password: string;
 }

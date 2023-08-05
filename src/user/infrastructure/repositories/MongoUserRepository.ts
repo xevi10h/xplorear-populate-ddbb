@@ -6,13 +6,17 @@ import IUser from "../../domain/models/interfaces/IUser";
 export default class MongoUserRepository implements UserRepository {
   constructor(private readonly UserModel: Model<IUser>) {}
 
-  async signup(user: User): Promise<void> {
+  async signup(user: User): Promise<User> {
     console.log("user", user);
-    await this.UserModel.create({ _id: user.id, ...user });
+    return this.UserModel.create({ _id: user.id, ...user });
   }
 
   async getByUsername(username: string): Promise<User | null | undefined> {
     return this.UserModel.findOne({ username }).exec();
+  }
+
+  async getByEmail(email: string): Promise<User | null | undefined> {
+    return this.UserModel.findOne({ email }).exec();
   }
 
   async save(user: User): Promise<void> {
