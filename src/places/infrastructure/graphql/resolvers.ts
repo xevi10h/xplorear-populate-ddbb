@@ -19,6 +19,10 @@ const resolvers = {
       return mongoPlaceRepository.getAll();
     },
   },
+  Place: {
+    // Resolver para el campo imagesUrl
+    imagesUrl: (parent: Place) => parent.photos?.map((photo) => photo.url),
+  },
   Mutation: {
     createPlace: async (
       parent: any,
@@ -28,7 +32,6 @@ const resolvers = {
         description: string;
         importance: number;
         rating?: number;
-        types?: string[];
       }
     ) => {
       const place: IPlace = {
@@ -37,7 +40,6 @@ const resolvers = {
         description: args.description,
         importance: args.importance,
         rating: args.rating,
-        types: args.types,
       };
       return mongoPlaceRepository.create(place);
     },

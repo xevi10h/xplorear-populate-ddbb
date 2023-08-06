@@ -1,6 +1,13 @@
 import { model, Schema } from "mongoose";
 import IPlace from "../../domain/models/interfaces/IPlace";
 
+const Photo = {
+  id: String,
+  url: String,
+  width: Number,
+  height: Number,
+};
+
 const placeSchema = new Schema<IPlace>({
   name: { type: String, required: true, unique: true },
   address: {
@@ -16,8 +23,8 @@ const placeSchema = new Schema<IPlace>({
   },
   description: { type: String, required: true },
   importance: { type: Number, required: true },
+  photos: { type: [Photo] },
   rating: { type: Number },
-  types: { type: [String] },
 });
 
 export const MongoPlaceModel = model("places", placeSchema);

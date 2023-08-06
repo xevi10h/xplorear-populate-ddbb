@@ -7,5 +7,4 @@ export default interface IPlace {
   description: string;
   importance: number;
   rating?: number;
-  types?: string[];
 }

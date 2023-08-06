@@ -1,19 +1,21 @@
 import PopulatePlacesDTO from "./PopulatePlacesDTO";
 import PlaceService from "../PlaceService";
 import { Configuration, OpenAIApi } from "openai";
+import { createClient } from "pexels";
+import IPlace from "../../domain/models/interfaces/IPlace";
+import IPhoto from "../../domain/models/interfaces/IPhoto";
 
 class PopulatePlacesUseCase {
   constructor(private readonly placeService: PlaceService) {}
 
   async execute({ place, number = 1 }: PopulatePlacesDTO): Promise<void> {
-    const configuration = new Configuration({
-      organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
-      apiKey:
-        process.env.OPENAI_API_KEY ||
-        "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",
-    });
-    const openai = new OpenAIApi(configuration);
     try {
+      const configuration = new Configuration({
+        organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
+        apiKey: process.env.OPENAI_API_KEY || "",
+      });
+      const openai = new OpenAIApi(configuration);
+      const pexelsClient = createClient(process.env.PEXELS_API_KEY || "");
       const placesString = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
@@ -47,7 +49,22 @@ class PopulatePlacesUseCase {
       );
       Array.isArray(placesJSON) &&
         (await Promise.all(
-          placesJSON.map(async (place) => this.placeService.createOne(place))
+          placesJSON.map(async (place: IPlace) => {
+            const photos: any = await pexelsClient.photos.search({
+              query: place.name,
+              per_page: 5,
+            });
+            if (Array.isArray(photos.photos)) {
+              console.log(photos.photos);
+              place.photos = photos.photos.map((photo: any) => ({
+                id: photo.id,
+                width: photo.width,
+                height: photo.height,
+                url: photo.src.original,
+              }));
+            }
+            this.placeService.createOne(place);
+          })
         ));
     } catch (error) {
       console.log("Error", error);

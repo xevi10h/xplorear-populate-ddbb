@@ -13,6 +13,13 @@ type Coordinates {
     country: String!
   }
 
+  type Photo {
+    id: String!
+    url: String!
+    width: Int!
+    height: Int!
+  }
+
   type Place {
     id: ID
     name: String!
@@ -20,7 +27,7 @@ type Coordinates {
     description: String!
     importance: Int!
     rating: Float
-    types: [String]
+    imagesUrl: [String]
   }
 
   type Query {
@@ -35,7 +42,6 @@ type Coordinates {
       description: String!
       importance: Int!
       rating: Float
-      types: [String]
     ): Place
     updatePlace(id: ID!, data: UpdatePlaceInput!): Place
     deletePlace(id: ID!): Boolean
@@ -61,7 +67,6 @@ type Coordinates {
     description: String
     importance: Int
     rating: Float
-    types: [String]
   }
 `;
 export default typeDefs;

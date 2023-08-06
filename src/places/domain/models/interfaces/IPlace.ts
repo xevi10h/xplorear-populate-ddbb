@@ -1,4 +1,5 @@
 import Address from "../valueObjects/Address";
+import IPhoto from "./IPhoto";
 
 export default interface IPlace {
   id?: string;
@@ -6,6 +7,6 @@ export default interface IPlace {
   address: Address;
   description: string;
   importance: number;
+  photos?: IPhoto[];
   rating?: number;
-  types?: string[];
 }

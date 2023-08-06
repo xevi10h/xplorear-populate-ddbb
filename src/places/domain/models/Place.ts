@@ -1,5 +1,6 @@
 import Address from "./valueObjects/Address";
 import IPlace from "./interfaces/IPlace";
+import IPhoto from "./interfaces/IPhoto";
 
 export default class Place implements IPlace {
   id?: string;
@@ -7,8 +8,8 @@ export default class Place implements IPlace {
   address: Address;
   description: string;
   importance: number;
+  photos?: IPhoto[];
   rating?: number;
-  types?: string[];
 
   constructor(place: IPlace) {
     this.id = place.id;
@@ -16,7 +17,7 @@ export default class Place implements IPlace {
     this.address = place.address;
     this.description = place.description;
     this.importance = place.importance;
+    this.photos = place.photos;
     this.rating = place.rating;
-    this.types = place.types;
   }
 }
