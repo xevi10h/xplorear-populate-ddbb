@@ -71,7 +71,8 @@ class PopulateMediaUseCase {
                 Engine: "neural",
                 Text: media?.text || "",
                 OutputFormat: "mp3",
-                OutputS3BucketName: "xplorearpolly",
+                OutputS3BucketName: `xplorearpolly`,
+                OutputS3KeyPrefix: `${placeId}/${lang}/`,
                 VoiceId: voiceId,
                 LanguageCode: lang,
               });

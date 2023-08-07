@@ -11,9 +11,15 @@ const typeDefs = `#graphql
     duration: Float!
   }
 
+  enum Language {
+    en_US
+    es_ES
+    fr_FR
+  }
+
   type Query {
     media(id: ID!): Media
-    mediaOfPlace(placeId: ID!): [Media]
+    mediaOfPlace(placeId: ID!, lang: Language): [Media]
   }
 `;
 export default typeDefs;

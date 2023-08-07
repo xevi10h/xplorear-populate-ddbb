@@ -8,8 +8,15 @@ const resolvers = {
     media: async (parent: any, args: { id: string }) => {
       return mongoMediaRepository.getById(args.id);
     },
-    mediaOfPlace: async (parent: any, args: { placeId: string }) => {
-      return mongoMediaRepository.getByPlaceId(args.placeId);
+    mediaOfPlace: async (
+      parent: any,
+      args: { placeId: string; lang: string }
+    ) => {
+      console.log(args.lang);
+      return mongoMediaRepository.getByPlaceId(
+        args.placeId,
+        args.lang?.replace("_", "-")
+      );
     },
   },
   Media: {

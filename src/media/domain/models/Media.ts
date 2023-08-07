@@ -3,7 +3,7 @@ import IMedia from "./interfaces/IMedia";
 
 export default class Media implements IMedia {
   id?: string;
-  placeId?: mongoose.Types.ObjectId;
+  placeId: mongoose.Types.ObjectId;
   title: string;
   text: string;
   lang: string;

@@ -59,6 +59,7 @@ class TranslateMediaUseCase {
         Text: newText || "",
         OutputFormat: "mp3",
         OutputS3BucketName: "xplorearpolly",
+        OutputS3KeyPrefix: `${media.placeId}/${outputLang}/`,
         VoiceId: voiceId,
         LanguageCode: outputLang,
       });
