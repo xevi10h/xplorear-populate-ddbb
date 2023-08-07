@@ -10,6 +10,7 @@ export default class Media implements IMedia {
   rating: number;
   audioUrl: string;
   voiceId: string;
+  duration?: number;
 
   constructor(media: IMedia) {
     this.id = media.id;
@@ -20,5 +21,6 @@ export default class Media implements IMedia {
     this.rating = media.rating;
     this.audioUrl = media.audioUrl;
     this.voiceId = media.voiceId;
+    this.duration = media.duration;
   }
 }

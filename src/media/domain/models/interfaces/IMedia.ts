@@ -9,4 +9,5 @@ export default interface IMedia {
   rating: number;
   audioUrl: string;
   voiceId: string;
+  duration?: number;
 }

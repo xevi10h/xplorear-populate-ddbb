@@ -6,8 +6,11 @@ import { userRoutes } from "./user/infrastructure/routes";
 import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import typeDefs from "./places/infrastructure/graphql/schema";
-import resolvers from "./places/infrastructure/graphql/resolvers";
+import placesTypeDefs from "./places/infrastructure/graphql/schema";
+import mediaTypeDefs from "./media/infrastructure/graphql/schema";
+import placesResolvers from "./places/infrastructure/graphql/resolvers";
+import mediaResolvers from "./media/infrastructure/graphql/resolvers";
+import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 
 dotenv.config();
 
@@ -25,12 +28,20 @@ app.listen(port, () => console.log(`Listening on port ${port}...`));
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({
+
+interface MyContext {
+  token?: String;
+}
+
+const typeDefs = mergeTypeDefs([placesTypeDefs, mediaTypeDefs]);
+const resolvers = mergeResolvers([placesResolvers, mediaResolvers]);
+const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
 });
 
 startStandaloneServer(server, {
+  context: async ({ req }) => ({ token: req.headers.token }),
   listen: { port: 4000 },
 });
 

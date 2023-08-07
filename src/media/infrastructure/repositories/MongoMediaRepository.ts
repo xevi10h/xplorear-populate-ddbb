@@ -26,6 +26,10 @@ export default class MongoMediaRepository implements MediaRepository {
     return this.MediaModel.findById(_id).exec();
   }
 
+  async getByPlaceId(placeId: string): Promise<Media[]> {
+    return this.MediaModel.find({ placeId }).exec();
+  }
+
   async getAll(): Promise<Media[]> {
     return this.MediaModel.find().exec();
   }

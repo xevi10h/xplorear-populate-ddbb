@@ -1,8 +1,3 @@
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-
-// src/infrastructure/graphql/resolvers.ts
-
 import IAddress from "../../domain/models/interfaces/IAddress";
 import IPlace from "../../domain/models/interfaces/IPlace";
 import MongoPlaceRepository from "../repositories/MongoPlaceRepository";
