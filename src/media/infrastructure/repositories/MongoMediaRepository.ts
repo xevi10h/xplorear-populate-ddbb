@@ -22,6 +22,10 @@ export default class MongoMediaRepository implements MediaRepository {
     await this.MediaModel.deleteOne({ _id });
   }
 
+  async get(filter: any): Promise<Media[]> {
+    return this.MediaModel.find(filter).exec();
+  }
+
   async getById(_id: string): Promise<Media | null | undefined> {
     return this.MediaModel.findById(_id).exec();
   }

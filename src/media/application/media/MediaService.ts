@@ -10,6 +10,14 @@ class MediaService {
   async getMediaById(mediaId: string): Promise<Media | null | undefined> {
     return this.mediaRepository.getById(mediaId);
   }
+
+  async getMediaByIds(mediaIds: string[]): Promise<Media[]> {
+    return this.mediaRepository.get({ _id: { $in: mediaIds } });
+  }
+
+  async getAllMedia(): Promise<Media[]> {
+    return this.mediaRepository.getAll();
+  }
 }
 
 export default MediaService;

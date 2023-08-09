@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import MediaRepository from "../../domain/repositories/MediaRepository";
 import MongoMediaRepository from "../repositories/MongoMediaRepository";
 import MediaService from "../../application/media/MediaService";
-import TranslateMediaUseCase from "../../application/media/translateMedia/TranslateMediaUseCase";
+import FillMediaDurationUseCase from "../../application/media/fillMediaDuration/FillMediaDurationUseCase";
 import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
-import translateMediaValidator from "../validators/TranslateMediaValidator";
+import fillMediaDurationValidator from "../validators/FillMediaDurationValidator";
 
 const mediaRepository: MediaRepository = new MongoMediaRepository(
   MongoMediaModel
@@ -12,18 +12,19 @@ const mediaRepository: MediaRepository = new MongoMediaRepository(
 
 const mediaService = new MediaService(mediaRepository);
 
-const translateMediaUseCase = new TranslateMediaUseCase(mediaService);
+const fillMediaDurationUseCase = new FillMediaDurationUseCase(mediaService);
 
-export const TranslateMediaController = async (req: Request, res: Response) => {
+export const FillMediaDurationController = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const mediaId = req.params.mediaId;
-    const { error } = translateMediaValidator.validate(req.body);
+    const { error } = fillMediaDurationValidator.validate(req.body);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
-    await translateMediaUseCase.execute({
-      outputLang: req.body.outputLang,
-      mediaId,
+    await fillMediaDurationUseCase.execute({
+      mediaIds: req.body,
     });
     res.status(201).send();
   } catch (error) {

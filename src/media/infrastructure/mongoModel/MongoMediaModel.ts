@@ -9,6 +9,7 @@ const mediaSchema = new Schema<IMedia>({
   rating: { type: Number, required: true },
   audioUrl: { type: String, required: true },
   voiceId: { type: String, required: true },
+  duration: { type: Number },
 });
 
 export const MongoMediaModel = model("media", mediaSchema);
