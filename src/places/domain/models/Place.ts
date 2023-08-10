@@ -1,9 +1,10 @@
 import Address from "./valueObjects/Address";
 import IPlace from "./interfaces/IPlace";
 import IPhoto from "./interfaces/IPhoto";
+import { Types } from "mongoose";
 
 export default class Place implements IPlace {
-  id?: string;
+  _id: Types.ObjectId;
   name: string;
   address: Address;
   description: string;
@@ -12,7 +13,7 @@ export default class Place implements IPlace {
   rating?: number;
 
   constructor(place: IPlace) {
-    this.id = place.id;
+    this._id = new Types.ObjectId();
     this.name = place.name;
     this.address = place.address;
     this.description = place.description;

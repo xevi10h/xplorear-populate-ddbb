@@ -7,8 +7,7 @@ export default class MongoUserRepository implements UserRepository {
   constructor(private readonly UserModel: Model<IUser>) {}
 
   async signup(user: User): Promise<User> {
-    console.log("user", user);
-    return this.UserModel.create({ _id: user.id, ...user });
+    return this.UserModel.create(user);
   }
 
   async getByUsername(username: string): Promise<User | null | undefined> {
@@ -20,7 +19,7 @@ export default class MongoUserRepository implements UserRepository {
   }
 
   async save(user: User): Promise<void> {
-    await this.UserModel.updateOne({ _id: user.id }, user);
+    await this.UserModel.updateOne({ _id: user._id.toString() }, user);
   }
 
   async delete(_id: string): Promise<void> {

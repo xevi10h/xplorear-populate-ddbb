@@ -31,7 +31,7 @@ export default class LoginGoogleUserUseCase {
       });
       user = await this.authService.signupUser(userToRegister);
     }
-    const token = jwt.sign({ userId: user.id }, "secret", { expiresIn: "1d" });
+    const token = jwt.sign({ userId: user._id }, "secret", { expiresIn: "1d" });
     user.token = token;
     this.authService.save(user);
     return token;

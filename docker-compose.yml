@@ -6,14 +6,20 @@ services:
     ports:
       - "8080:8080"
       - "4000:4000"
+      - "9229:9229"
     links:
       - mongo
     environment:
       - DEEPL_AUTH_KEY=${DEEPL_AUTH_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
+      - ./package.json:/package.json
       - ~/.aws:/root/.aws:ro
       - .:/usr/src/app
+      - ./src/server.ts:/src/server.ts
+      - ./tsconfig.json:/tsconfig.json
+      - ./node_modules:/node_modules
+    command: nodemon ./src/server.ts
   mongo:
     container_name: mongo
     image: mongo

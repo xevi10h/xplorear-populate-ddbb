@@ -29,13 +29,13 @@ const resolvers = {
         rating?: number;
       }
     ) => {
-      const place: IPlace = {
+      const place = new Place({
         name: args.name,
         address: args.address,
         description: args.description,
         importance: args.importance,
         rating: args.rating,
-      };
+      });
       return mongoPlaceRepository.create(place);
     },
     updatePlace: async (

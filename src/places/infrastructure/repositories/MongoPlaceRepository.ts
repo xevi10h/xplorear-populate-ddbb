@@ -6,12 +6,12 @@ import IPlace from "../../domain/models/interfaces/IPlace";
 export default class MongoPlaceRepository implements PlaceRepository {
   constructor(private readonly PlaceModel: Model<IPlace>) {}
 
-  async create(place: Place): Promise<void> {
-    await this.PlaceModel.create({ _id: place.id, ...place });
+  async create(place: Place): Promise<Place> {
+    return this.PlaceModel.create(place);
   }
 
   async save(place: Place): Promise<void> {
-    await this.PlaceModel.updateOne({ _id: place.id }, place);
+    await this.PlaceModel.updateOne({ _id: place._id }, place);
   }
 
   async delete(_id: string): Promise<void> {
@@ -20,6 +20,10 @@ export default class MongoPlaceRepository implements PlaceRepository {
 
   async getById(_id: string): Promise<Place | null | undefined> {
     return this.PlaceModel.findById(_id).exec();
+  }
+
+  async getByName(name: string): Promise<Place | null | undefined> {
+    return this.PlaceModel.findOne({ name }).exec();
   }
 
   async getAll(): Promise<Place[]> {

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import IPlace from "../../domain/models/interfaces/IPlace";
 
 const Photo = {
@@ -9,6 +9,7 @@ const Photo = {
 };
 
 const placeSchema = new Schema<IPlace>({
+  _id: Types.ObjectId,
   name: { type: String, required: true, unique: true },
   address: {
     coordinates: {

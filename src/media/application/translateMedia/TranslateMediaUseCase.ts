@@ -1,12 +1,13 @@
 import MediaService from "../MediaService";
 import TranslateMediaDto from "./TranslateMediaDTO";
-import MediaNotFoundError from "../../../domain/exceptions/MediaNotFoundError";
+import MediaNotFoundError from "../../domain/exceptions/MediaNotFoundError";
 import {
   PollyClient,
   StartSpeechSynthesisTaskCommand,
 } from "@aws-sdk/client-polly"; // ES Modules import
 import * as deepl from "deepl-node";
 import { DescribeVoicesCommand } from "@aws-sdk/client-polly";
+import Media from "../../domain/models/Media";
 
 class TranslateMediaUseCase {
   constructor(private readonly mediaService: MediaService) {}
@@ -64,15 +65,18 @@ class TranslateMediaUseCase {
         LanguageCode: outputLang,
       });
       const response = await client.send(command);
-      this.mediaService.createOne({
-        rating: media.rating,
-        placeId: media.placeId,
-        audioUrl: response.SynthesisTask?.OutputUri || "",
-        lang: outputLang,
-        text: newText,
-        title: newTitle,
-        voiceId,
-      });
+
+      this.mediaService.createOne(
+        new Media({
+          rating: media.rating,
+          placeId: media.placeId,
+          audioUrl: response.SynthesisTask?.OutputUri || "",
+          lang: outputLang,
+          text: newText,
+          title: newTitle,
+          voiceId,
+        })
+      );
     } catch (error) {
       console.log("Error", error);
       throw error;

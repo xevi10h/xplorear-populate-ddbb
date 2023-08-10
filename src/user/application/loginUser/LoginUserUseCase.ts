@@ -20,7 +20,7 @@ export default class LoginUserUseCase {
     if (!isMatch) {
       throw new InvalidCredentialsError(`Invalid credentials`);
     }
-    const token = jwt.sign({ userId: user.id }, "secret", { expiresIn: "1d" });
+    const token = jwt.sign({ userId: user._id }, "secret", { expiresIn: "1d" });
     user.token = token;
     this.authService.save(user);
     return token;

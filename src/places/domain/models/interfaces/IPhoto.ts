@@ -1,5 +1,8 @@
+import { Types } from "mongoose";
+
 export default interface IPhoto {
-  id: string;
+  _id?: Types.ObjectId;
+  pexelsId: string;
   url: string;
   width: number;
   height: number;

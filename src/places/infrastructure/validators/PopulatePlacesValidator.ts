@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 const populatePlacesValidator = Joi.object({
-  place: Joi.string().required(), // Normally will be the city, zone or neighborhood
+  zone: Joi.string().required(), // Normally will be the city, zone or neighborhood
   number: Joi.number().min(0).max(10), // The number of new places we want to add (1 if not specified)
 });
 

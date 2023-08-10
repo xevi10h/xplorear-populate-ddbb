@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import IMedia from "./interfaces/IMedia";
 
 export default class Media implements IMedia {
-  id?: string;
+  _id: Types.ObjectId;
   placeId: mongoose.Types.ObjectId;
   title: string;
   text: string;
@@ -13,7 +13,7 @@ export default class Media implements IMedia {
   duration?: number;
 
   constructor(media: IMedia) {
-    this.id = media.id;
+    this._id = new Types.ObjectId();
     this.placeId = media.placeId;
     this.title = media.title;
     this.text = media.text;

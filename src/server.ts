@@ -3,6 +3,7 @@ import cors from "cors";
 import { placeRoutes } from "./places/infrastructure/routes";
 import { mediaRoutes } from "./media/infrastructure/routes";
 import { userRoutes } from "./user/infrastructure/routes";
+import { routesRoutes } from "./routes/infrastructure/routes";
 import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/places", placeRoutes);
 app.use("/media", mediaRoutes);
 app.use("/users", userRoutes);
+app.use("/routes", routesRoutes);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

@@ -6,16 +6,15 @@ import IMedia from "../../domain/models/interfaces/IMedia";
 export default class MongoMediaRepository implements MediaRepository {
   constructor(private readonly MediaModel: Model<IMedia>) {}
 
-  async create(media: Media): Promise<void> {
-    await this.MediaModel.create({
-      _id: media.id,
+  async create(media: Media): Promise<Media> {
+    return this.MediaModel.create({
       ...media,
       placeId: new mongoose.Types.ObjectId(media.placeId),
     });
   }
 
   async save(media: Media): Promise<void> {
-    await this.MediaModel.updateOne({ _id: media.id }, media);
+    await this.MediaModel.updateOne({ _id: media._id }, media);
   }
 
   async delete(_id: string): Promise<void> {

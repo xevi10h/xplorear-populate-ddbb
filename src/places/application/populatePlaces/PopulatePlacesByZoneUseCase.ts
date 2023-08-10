@@ -1,17 +1,27 @@
 import PopulatePlacesDTO from "./PopulatePlacesDTO";
 import PlaceService from "../PlaceService";
 import { Configuration, OpenAIApi } from "openai";
-import { createClient } from "pexels";
+import { Photo as PexelsPhoto, createClient } from "pexels";
+import Photo from "../../domain/models/valueObjects/Photo";
 import IPlace from "../../domain/models/interfaces/IPlace";
-import IPhoto from "../../domain/models/interfaces/IPhoto";
+import MediaService from "../../../media/application/MediaService";
+import PopulateMediaUseCase from "../../../media/application/populateMedia/PopulateMediaUseCase";
+import Place from "../../domain/models/Place";
 
-class PopulatePlacesUseCase {
-  constructor(private readonly placeService: PlaceService) {}
+class PopulatePlacesByZoneUseCase {
+  constructor(
+    private readonly placeService: PlaceService,
+    private readonly mediaService: MediaService
+  ) {}
 
-  async execute({ place, number = 1 }: PopulatePlacesDTO): Promise<void> {
+  async execute({
+    zone,
+    number = 1,
+    addMedia,
+  }: PopulatePlacesDTO): Promise<void> {
     try {
       const configuration = new Configuration({
-        organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
+        organization: process.env.OPENAI_ORGANIZATION_ID || "",
         apiKey: process.env.OPENAI_API_KEY || "",
       });
       const openai = new OpenAIApi(configuration);
@@ -21,7 +31,7 @@ class PopulatePlacesUseCase {
         messages: [
           {
             role: "user",
-            content: `I want to populate my MongoDB database. This database has to contain the most important places of interest in a zone, neighborhood, city, region or country. For this reason, I ask you to return me a list of the ${number} most important monuments or places of interest of the region/zone ${place}.
+            content: `I want to populate my MongoDB database. This database has to contain the most important places of interest in a zone, neighborhood, city, region or country. For this reason, I ask you to return me a list of the ${number} most important monuments or places of interest of the region/zone ${zone}.
             The structure of the objects that compose my database is the following:
             {
               "name": <string> (name of the place of interest),
@@ -55,15 +65,30 @@ class PopulatePlacesUseCase {
               per_page: 5,
             });
             if (Array.isArray(photos.photos)) {
-              console.log(photos.photos);
-              place.photos = photos.photos.map((photo: any) => ({
-                id: photo.id,
-                width: photo.width,
-                height: photo.height,
-                url: photo.src.original,
-              }));
+              place.photos = photos.photos.map(
+                (photo: PexelsPhoto) =>
+                  new Photo({
+                    pexelsId: photo.id.toString(),
+                    width: photo.width,
+                    height: photo.height,
+                    url: photo.src.original,
+                  })
+              );
             }
-            this.placeService.createOne(place);
+            const placeCreated = await this.placeService.createOne(
+              new Place(place)
+            );
+            if (placeCreated._id && addMedia) {
+              const populateMediaUseCase = new PopulateMediaUseCase(
+                this.mediaService,
+                this.placeService
+              );
+              await populateMediaUseCase.execute({
+                placeId: placeCreated._id.toString(),
+                number: 10,
+                lang: "en-US",
+              });
+            }
           })
         ));
     } catch (error) {
@@ -73,4 +98,4 @@ class PopulatePlacesUseCase {
   }
 }
 
-export default PopulatePlacesUseCase;
+export default PopulatePlacesByZoneUseCase;

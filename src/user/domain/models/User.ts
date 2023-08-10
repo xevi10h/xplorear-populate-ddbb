@@ -1,8 +1,9 @@
 // import { Date } from "mongoose";
+import { Types } from "mongoose";
 import IUser from "./interfaces/IUser";
 
 export default class User implements IUser {
-  id?: string;
+  _id: Types.ObjectId;
   email: string;
   username: string;
   createdAt: Date;
@@ -11,7 +12,7 @@ export default class User implements IUser {
   token?: string;
 
   constructor(user: IUser) {
-    this.id = user.id;
+    this._id = new Types.ObjectId();
     this.email = user.email;
     this.username = user.username;
     this.hashedPassword = user.hashedPassword;

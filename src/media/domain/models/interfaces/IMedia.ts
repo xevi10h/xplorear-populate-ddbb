@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 export default interface IMedia {
-  id?: string;
+  _id?: Types.ObjectId;
   placeId: mongoose.Types.ObjectId;
   title: string;
   text: string;

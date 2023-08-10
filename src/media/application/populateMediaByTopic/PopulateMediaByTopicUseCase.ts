@@ -1,17 +1,16 @@
-import Media from "../../../domain/models/Media";
+import Media from "../../domain/models/Media";
 import MediaService from "../MediaService";
-import PlaceService from "../../place/PlaceService";
-import PopulateMediaDto from "../populateMedia/PopulateMediaDTO";
+import PlaceService from "../../../places/application/PlaceService";
+import PopulateMediaByTopicDto from "./PopulateMediaByTopicDTO";
 import { Configuration, OpenAIApi } from "openai";
-import PlaceNotFoundError from "../../../domain/exceptions/PlaceNotFoundError";
+import PlaceNotFoundError from "../../../places/domain/exceptions/PlaceNotFoundError";
 import {
   PollyClient,
   StartSpeechSynthesisTaskCommand,
-  GetSpeechSynthesisTaskCommand,
   DescribeVoicesCommand,
 } from "@aws-sdk/client-polly"; // ES Modules import
 
-class PopulateMediaUseCase {
+class PopulateMediaByTopicUseCase {
   constructor(
     private readonly mediaService: MediaService,
     private readonly placeService: PlaceService
@@ -19,15 +18,15 @@ class PopulateMediaUseCase {
 
   async execute({
     placeId,
-    number = 1,
     lang = "en-US",
-  }: PopulateMediaDto): Promise<void> {
+    topic,
+  }: PopulateMediaByTopicDto): Promise<Media> {
     const place = await this.placeService.getPlaceById(placeId);
     if (!place) {
       throw new PlaceNotFoundError("Place not found");
     }
     const configuration = new Configuration({
-      organization: "org-G3bAC6e2uu42WwtJnFVz7v8Y",
+      organization: process.env.OPENAI_ORGANIZATION_ID || "",
       apiKey: process.env.OPENAI_API_KEY || "",
     });
     const openai = new OpenAIApi(configuration);
@@ -49,11 +48,18 @@ class PopulateMediaUseCase {
         messages: [
           {
             role: "user",
-            content: `I want to populate my MongoDB database. This database must contain the most important themes or topics of a place of interest. This topic or theme must be developed in depth so that it can be read later and the audios will be between 5 and 10 minutes long. For this reason, I ask you to give me back a list of the ${number} most important topics or themes of the ${place.name} place of interest.
-            The structure of the objects that make up my database is as follows:
+            content: `I want to populate my MongoDB database. For this reason, I ask you to give me back the most important topic or theme of the ${
+              place.name
+            } place of interest.
+            ${
+              topic
+                ? `The subject or topic you should talk about should be related to: ${topic}`
+                : ""
+            }
+            The structure of the object that make up my database is as follows:
             { 
               "title": <string> (title of the theme or topic),
-              "text": <string> (text between 750 and 1500 words),
+              "text": <string> (text between 400 and 600 words),
               "rating": <number> (random float between 0-5 with 2 decimal places, for example: 3.67),
             }
             The answer you have to give me must be convertible into a JSON directly with the JSON.parse() function so that I can insert it directly into my database. Therefore, you only have to give me back what I ask you (without any introduction or additional text) only what I have asked you strictly.`,
@@ -63,33 +69,31 @@ class PopulateMediaUseCase {
       const mediaJSON = JSON.parse(
         mediaString.data.choices[0].message?.content || ""
       );
-      Array.isArray(mediaJSON) &&
-        (await Promise.all(
-          mediaJSON.map(async (media) => {
-            try {
-              const command = new StartSpeechSynthesisTaskCommand({
-                Engine: "neural",
-                Text: media?.text || "",
-                OutputFormat: "mp3",
-                OutputS3BucketName: `xplorearpolly`,
-                OutputS3KeyPrefix: `${placeId}/${lang}/`,
-                VoiceId: voiceId,
-                LanguageCode: lang,
-              });
-              const response = await client.send(command);
-              return this.mediaService.createOne({
-                ...media,
-                audioUrl: response.SynthesisTask?.OutputUri,
-                lang,
-                placeId,
-                voiceId,
-              });
-            } catch (error) {
-              console.log("Error", error);
-              throw error;
-            }
+      try {
+        const command = new StartSpeechSynthesisTaskCommand({
+          Engine: "neural",
+          Text: mediaJSON?.text || "",
+          OutputFormat: "mp3",
+          OutputS3BucketName: `xplorearpolly`,
+          OutputS3KeyPrefix: `${placeId}/${lang}/`,
+          VoiceId: voiceId,
+          LanguageCode: lang,
+        });
+        const response = await client.send(command);
+
+        return this.mediaService.createOne(
+          new Media({
+            ...mediaJSON,
+            audioUrl: response.SynthesisTask?.OutputUri,
+            lang,
+            placeId,
+            voiceId,
           })
-        ));
+        );
+      } catch (error) {
+        console.log("Error", error);
+        throw error;
+      }
     } catch (error) {
       console.log("Error", error);
       throw error;
@@ -97,4 +101,4 @@ class PopulateMediaUseCase {
   }
 }
 
-export default PopulateMediaUseCase;
+export default PopulateMediaByTopicUseCase;

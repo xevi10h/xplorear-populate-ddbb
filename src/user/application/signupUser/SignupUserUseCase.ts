@@ -30,7 +30,7 @@ export default class SignupUserUseCase {
       createdAt: new Date(),
     });
     const userCreated = await this.authService.signupUser(user);
-    const token = jwt.sign({ userId: userCreated.id }, "secret", {
+    const token = jwt.sign({ userId: userCreated._id }, "secret", {
       expiresIn: "1d",
     });
     user.token = token;

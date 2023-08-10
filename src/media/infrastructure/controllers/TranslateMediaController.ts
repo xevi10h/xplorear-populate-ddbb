@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
 import MediaRepository from "../../domain/repositories/MediaRepository";
 import MongoMediaRepository from "../repositories/MongoMediaRepository";
-import MediaService from "../../application/media/MediaService";
-import TranslateMediaUseCase from "../../application/media/translateMedia/TranslateMediaUseCase";
+import MediaService from "../../application/MediaService";
+import TranslateMediaUseCase from "../../application/translateMedia/TranslateMediaUseCase";
 import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
 import translateMediaValidator from "../validators/TranslateMediaValidator";
-import PlaceService from "../../application/place/PlaceService";
-import PlaceRepository from "../../domain/repositories/PlaceRepository";
-import MongoPlaceRepository from "../repositories/MongoPlaceRepository";
-import { MongoPlaceModel } from "../../../places/infrastructure/mongoModel/MongoPlaceModel";
 
 const mediaRepository: MediaRepository = new MongoMediaRepository(
   MongoMediaModel
