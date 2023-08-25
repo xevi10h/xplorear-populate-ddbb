@@ -1,16 +1,10 @@
 import { Request, Response } from "express";
-import MediaRepository from "../../domain/repositories/MediaRepository";
-import MongoMediaRepository from "../repositories/MongoMediaRepository";
 import MediaService from "../../application/MediaService";
 import TranslateMediaUseCase from "../../application/translateMedia/TranslateMediaUseCase";
 import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
 import translateMediaValidator from "../validators/TranslateMediaValidator";
 
-const mediaRepository: MediaRepository = new MongoMediaRepository(
-  MongoMediaModel
-);
-
-const mediaService = new MediaService(mediaRepository);
+const mediaService = new MediaService(MongoMediaModel);
 
 const translateMediaUseCase = new TranslateMediaUseCase(mediaService);
 

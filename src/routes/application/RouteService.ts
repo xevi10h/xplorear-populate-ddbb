@@ -1,11 +1,12 @@
+import { Model } from "mongoose";
 import Route from "../domain/models/Route";
-import RouteRepository from "../domain/repositories/RouteRepository";
+import IRoute from "../domain/models/interfaces/IRoute";
 
 class RouteService {
-  constructor(private readonly routeRepository: RouteRepository) {}
+  constructor(private readonly RouteModel: Model<IRoute>) {}
 
   async createOne(route: Route): Promise<void> {
-    await this.routeRepository.create(route);
+    await this.RouteModel.create(route);
   }
 }
 

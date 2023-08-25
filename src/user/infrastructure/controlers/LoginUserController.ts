@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
-import UserRepository from "../../domain/repositories/UserRepository";
-import MongoUserRepository from "../repositories/MongoUserRepository";
 import AuthService from "../../application/AuthService";
 import LoginUserUseCase from "../../application/loginUser/LoginUserUseCase";
 import { MongoUserModel } from "../mongoModel/MongoUserModel";
 import loginUserValidator from "../validators/LoginUserValidator";
 
-const userRepository: UserRepository = new MongoUserRepository(MongoUserModel);
-
-const authService = new AuthService(userRepository);
+const authService = new AuthService(MongoUserModel);
 const loginUserUseCase = new LoginUserUseCase(authService);
 export const LoginUserController = async (req: Request, res: Response) => {
   try {

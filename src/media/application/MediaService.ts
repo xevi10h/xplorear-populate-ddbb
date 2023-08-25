@@ -1,18 +1,20 @@
+import { Model } from "mongoose";
 import Media from "../domain/models/Media";
-import MediaRepository from "../domain/repositories/MediaRepository";
+import IMedia from "../domain/models/interfaces/IMedia";
 
 class MediaService {
-  constructor(private readonly mediaRepository: MediaRepository) {}
+  constructor(private readonly MediaModel: Model<IMedia>) {}
 
   async createOne(media: Media): Promise<Media> {
-    return this.mediaRepository.create(media);
+    return this.MediaModel.create(media);
   }
   async getMediaById(mediaId: string): Promise<Media | null | undefined> {
-    return this.mediaRepository.getById(mediaId);
+    return this.MediaModel.findById(mediaId);
   }
 
-  async getMediaByPlaceId(placeId: string): Promise<Media[]> {
-    return this.mediaRepository.getByPlaceId(placeId);
+  async getMediaByPlaceId(placeId: string, lang?: string): Promise<Media[]> {
+    const query = lang ? { placeId, lang } : { placeId };
+    return this.MediaModel.find(query);
   }
 }
 

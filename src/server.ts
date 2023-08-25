@@ -9,8 +9,10 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import placesTypeDefs from "./places/infrastructure/graphql/schema";
 import mediaTypeDefs from "./media/infrastructure/graphql/schema";
+import routesTypeDefs from "./routes/infrastructure/graphql/schema";
 import placesResolvers from "./places/infrastructure/graphql/resolvers";
 import mediaResolvers from "./media/infrastructure/graphql/resolvers";
+import routesResolvers from "./routes/infrastructure/graphql/resolvers";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 
 dotenv.config();
@@ -35,8 +37,12 @@ interface MyContext {
   token?: String;
 }
 
-const typeDefs = mergeTypeDefs([placesTypeDefs, mediaTypeDefs]);
-const resolvers = mergeResolvers([placesResolvers, mediaResolvers]);
+const typeDefs = mergeTypeDefs([placesTypeDefs, mediaTypeDefs, routesTypeDefs]);
+const resolvers = mergeResolvers([
+  placesResolvers,
+  mediaResolvers,
+  routesResolvers,
+]);
 const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,

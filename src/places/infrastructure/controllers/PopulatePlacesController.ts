@@ -1,24 +1,13 @@
 import { Request, Response } from "express";
-import PlaceRepository from "../../domain/repositories/PlaceRepository";
-import MongoPlaceRepository from "../repositories/MongoPlaceRepository";
 import PlaceService from "../../application/PlaceService";
 import PopulatePlacesByZoneUseCase from "../../application/populatePlaces/PopulatePlacesByZoneUseCase";
 import { MongoPlaceModel } from "../mongoModel/MongoPlaceModel";
 import populatePlacesValidator from "../validators/PopulatePlacesValidator";
-import MediaRepository from "../../../media/domain/repositories/MediaRepository";
-import MongoMediaRepository from "../../../media/infrastructure/repositories/MongoMediaRepository";
 import { MongoMediaModel } from "../../../media/infrastructure/mongoModel/MongoMediaModel";
 import MediaService from "../../../media/application/MediaService";
 
-const placeRepository: PlaceRepository = new MongoPlaceRepository(
-  MongoPlaceModel
-);
-const mediaRepository: MediaRepository = new MongoMediaRepository(
-  MongoMediaModel
-);
-
-const placeService = new PlaceService(placeRepository);
-const mediaService = new MediaService(mediaRepository);
+const placeService = new PlaceService(MongoPlaceModel);
+const mediaService = new MediaService(MongoMediaModel);
 const populatePlacesByZoneUseCase = new PopulatePlacesByZoneUseCase(
   placeService,
   mediaService

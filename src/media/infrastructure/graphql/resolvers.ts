@@ -1,21 +1,19 @@
-import MongoMediaRepository from "../repositories/MongoMediaRepository";
 import Media from "../../domain/models/Media";
 import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
-const mongoMediaRepository = new MongoMediaRepository(MongoMediaModel);
 
 const resolvers = {
   Query: {
     media: async (parent: any, args: { id: string }) => {
-      return mongoMediaRepository.getById(args.id);
+      return MongoMediaModel.findById(args.id);
     },
     mediaOfPlace: async (
       parent: any,
       args: { placeId: string; lang: string }
     ) => {
-      return mongoMediaRepository.getByPlaceId(
-        args.placeId,
-        args.lang?.replace("_", "-")
-      );
+      const query = args.lang
+        ? { placeId: args.placeId, lang: args.lang }
+        : { placeId: args.placeId };
+      return MongoMediaModel.find(query);
     },
   },
   Media: {

@@ -1,17 +1,14 @@
-import IAddress from "../../domain/models/interfaces/IAddress";
-import IPlace from "../../domain/models/interfaces/IPlace";
-import MongoPlaceRepository from "../repositories/MongoPlaceRepository";
 import Place from "../../domain/models/Place";
+import IAddress from "../../domain/models/interfaces/IAddress";
 import { MongoPlaceModel } from "../mongoModel/MongoPlaceModel";
-const mongoPlaceRepository = new MongoPlaceRepository(MongoPlaceModel);
 
 const resolvers = {
   Query: {
     place: async (parent: any, args: { id: string }) => {
-      return mongoPlaceRepository.getById(args.id);
+      return MongoPlaceModel.findById(args.id);
     },
     places: async () => {
-      return mongoPlaceRepository.getAll();
+      return MongoPlaceModel.find();
     },
   },
   Place: {
@@ -29,23 +26,23 @@ const resolvers = {
         rating?: number;
       }
     ) => {
-      const place = new Place({
+      const place = new MongoPlaceModel({
         name: args.name,
         address: args.address,
         description: args.description,
         importance: args.importance,
         rating: args.rating,
       });
-      return mongoPlaceRepository.create(place);
+      return place.save();
     },
     updatePlace: async (
       parent: any,
       args: { id: string; data: Partial<Place> }
     ) => {
-      return mongoPlaceRepository.updateById(args.id, args.data);
+      return MongoPlaceModel.findOneAndUpdate({ _id: args.id }, args.data);
     },
     deletePlace: async (parent: any, args: { id: string }) => {
-      return mongoPlaceRepository.delete(args.id);
+      return MongoPlaceModel.deleteOne({ _id: args.id });
     },
   },
 };

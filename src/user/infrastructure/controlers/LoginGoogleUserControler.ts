@@ -1,14 +1,10 @@
 import { Request, Response } from "express";
-import UserRepository from "../../domain/repositories/UserRepository";
-import MongoUserRepository from "../repositories/MongoUserRepository";
 import AuthService from "../../application/AuthService";
 import LoginGoogleUserUseCase from "../../application/loginGoogleUser/LoginGoogleUserUseCase";
 import { MongoUserModel } from "../mongoModel/MongoUserModel";
 import loginGoogleUserValidator from "../validators/LoginGoogleUserValidator";
 
-const userRepository: UserRepository = new MongoUserRepository(MongoUserModel);
-
-const authService = new AuthService(userRepository);
+const authService = new AuthService(MongoUserModel);
 const loginGoogleUserUseCase = new LoginGoogleUserUseCase(authService);
 export const LoginGoogleUserController = async (
   req: Request,

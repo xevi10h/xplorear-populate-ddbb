@@ -1,19 +1,20 @@
+import { Model } from "mongoose";
 import Place from "../domain/models/Place";
-import PlaceRepository from "../domain/repositories/PlaceRepository";
+import IPlace from "../domain/models/interfaces/IPlace";
 
 class PlaceService {
-  constructor(private readonly placeRepository: PlaceRepository) {}
+  constructor(private readonly PlaceModel: Model<IPlace>) {}
 
   async createOne(place: Place): Promise<Place> {
-    return this.placeRepository.create(place);
+    return this.PlaceModel.create(place);
   }
 
-  async getPlaceById(id: string): Promise<Place | null | undefined> {
-    return this.placeRepository.getById(id);
+  async getPlaceById(placeId: string): Promise<Place | null | undefined> {
+    return this.PlaceModel.findById(placeId);
   }
 
   async getPlaceByName(name: string): Promise<Place | null | undefined> {
-    return this.placeRepository.getByName(name);
+    return this.PlaceModel.findOne({ name });
   }
 }
 

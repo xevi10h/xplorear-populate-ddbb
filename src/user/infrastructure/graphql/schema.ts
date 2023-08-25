@@ -1,10 +1,8 @@
 const typeDefs = `#graphql
   type User {
     id: ID
-    email: string;
-    username: string;
-    hashedPassword: string;
-    token?: string;
+    email: String!
+    username: String!
   }
 `;
 export default typeDefs;
