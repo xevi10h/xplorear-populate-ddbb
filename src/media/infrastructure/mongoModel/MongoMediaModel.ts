@@ -1,8 +1,7 @@
 import { model, Schema, Types } from "mongoose";
-import IMedia from "../../domain/models/interfaces/IMedia";
+import IMedia from "../../domain/IMedia";
 
 const mediaSchema = new Schema<IMedia>({
-  _id: Types.ObjectId,
   placeId: { type: Schema.Types.ObjectId, ref: "places", required: true },
   title: { type: String, required: true },
   text: { type: String, required: true },

@@ -1,8 +1,7 @@
 import { model, Schema, Types } from "mongoose";
-import IUser from "../../domain/models/interfaces/IUser";
+import IUser from "../../domain/IUser";
 
 const userSchema = new Schema<IUser>({
-  _id: Types.ObjectId,
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   hashedPassword: { type: String },
@@ -20,6 +19,7 @@ const userSchema = new Schema<IUser>({
   googleId: {
     type: String,
     unique: true,
+    sparse: true,
     validate: {
       validator: function (value: any) {
         return /^\d+$/.test(value);

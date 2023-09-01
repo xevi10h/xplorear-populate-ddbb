@@ -1,5 +1,6 @@
-const typeDefs = `#graphql
-type Coordinates {
+import gql from "graphql-tag";
+const typeDefs = gql`
+  type Coordinates {
     lat: Float!
     lng: Float!
   }
@@ -36,6 +37,8 @@ type Coordinates {
   }
 
   type Mutation {
+    populatePlaceByZone(zone: String!, number: Int): [Place]
+    populatePlaceByName(name: String!, addMedia: Boolean): Place
     createPlace(
       name: String!
       address: AddressInput!

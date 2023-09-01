@@ -1,57 +1,38 @@
-import express from "express";
-import cors from "cors";
-import { placeRoutes } from "./places/infrastructure/routes";
-import { mediaRoutes } from "./media/infrastructure/routes";
-import { userRoutes } from "./user/infrastructure/routes";
-import { routesRoutes } from "./routes/infrastructure/routes";
 import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import placesTypeDefs from "./places/infrastructure/graphql/schema";
-import mediaTypeDefs from "./media/infrastructure/graphql/schema";
-import routesTypeDefs from "./routes/infrastructure/graphql/schema";
-import placesResolvers from "./places/infrastructure/graphql/resolvers";
-import mediaResolvers from "./media/infrastructure/graphql/resolvers";
-import routesResolvers from "./routes/infrastructure/graphql/resolvers";
 import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
+import connection from "./connection";
+import { loadFilesSync } from "@graphql-tools/load-files";
+import path from "path";
+
+connection;
 
 dotenv.config();
 
-const app = express();
+// Cargar automáticamente todos los schemas y resolvers
+const allTypeDefs = loadFilesSync(
+  path.join(__dirname, "./**/graphql/schema.*")
+);
+const allResolvers = loadFilesSync(
+  path.join(__dirname, "./**/graphql/resolvers.*")
+);
 
-app.use(cors({ origin: "http://localhost:8080" }));
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use("/places", placeRoutes);
-app.use("/media", mediaRoutes);
-app.use("/users", userRoutes);
-app.use("/routes", routesRoutes);
-
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
-
-// The ApolloServer constructor requires two parameters: your schema
-// definition and your set of resolvers.
+const typeDefs = mergeTypeDefs(allTypeDefs);
+const resolvers = mergeResolvers(allResolvers);
 
 interface MyContext {
   token?: String;
 }
 
-const typeDefs = mergeTypeDefs([placesTypeDefs, mediaTypeDefs, routesTypeDefs]);
-const resolvers = mergeResolvers([
-  placesResolvers,
-  mediaResolvers,
-  routesResolvers,
-]);
 const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
 });
 
-startStandaloneServer(server, {
+export default startStandaloneServer(server, {
   context: async ({ req }) => ({ token: req.headers.token }),
   listen: { port: 4000 },
 });
 
 console.log(`🚀  Server ready at: 4000`);
-export default app;

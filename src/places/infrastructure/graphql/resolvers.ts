@@ -1,6 +1,15 @@
-import Place from "../../domain/models/Place";
-import IAddress from "../../domain/models/interfaces/IAddress";
+import IAddress from "../../domain/interfaces/IAddress";
 import { MongoPlaceModel } from "../mongoModel/MongoPlaceModel";
+import IPlace from "../../domain/interfaces/IPlace";
+import PopulatePlacesByZoneUseCase from "../../application/PopulatePlacesByZoneUseCase";
+import PopulatePlacesByNameUseCase from "../../application/PopulatePlaceByNameUseCase";
+
+interface PopulatePlaceByNameInput {
+  populatePlaceByNameInput: {
+    name: string;
+    addMedia?: boolean;
+  };
+}
 
 const resolvers = {
   Query: {
@@ -13,9 +22,27 @@ const resolvers = {
   },
   Place: {
     // Resolver para el campo imagesUrl
-    imagesUrl: (parent: Place) => parent.photos?.map((photo) => photo.url),
+    imagesUrl: (parent: IPlace) => parent.photos?.map((photo) => photo.url),
   },
   Mutation: {
+    populatePlaceByZone: async (
+      parent: any,
+      args: { zone: string; number?: number }
+    ) =>
+      PopulatePlacesByZoneUseCase({
+        zone: args.zone,
+        number: args.number,
+      }),
+
+    populatePlaceByName: async (
+      parent: any,
+      args: { name: string; addMedia?: boolean }
+    ) =>
+      PopulatePlacesByNameUseCase({
+        name: args.name,
+        addMedia: args.addMedia,
+      }),
+
     createPlace: async (
       parent: any,
       args: {
@@ -37,7 +64,7 @@ const resolvers = {
     },
     updatePlace: async (
       parent: any,
-      args: { id: string; data: Partial<Place> }
+      args: { id: string; data: Partial<IPlace> }
     ) => {
       return MongoPlaceModel.findOneAndUpdate({ _id: args.id }, args.data);
     },
