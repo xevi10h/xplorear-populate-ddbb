@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import { Photo as PexelsPhoto, createClient } from "pexels";
-import PopulateMediaUseCase from "../../media/application/PopulateMediaByNumberUseCase";
+import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase";
 import Photo from "../domain/valueObjects/Photo";
 import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
 

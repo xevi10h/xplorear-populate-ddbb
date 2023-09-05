@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai";
 import { Photo as PexelsPhoto, createClient } from "pexels";
 import Photo from "../domain/valueObjects/Photo";
 import IPlace from "../domain/interfaces/IPlace";
-import PopulateMediaUseCase from "../../media/application/PopulateMediaByNumberUseCase";
+import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase";
 import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
 
 interface PopulatePlacesByZoneDTO {

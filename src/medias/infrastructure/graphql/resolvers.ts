@@ -46,8 +46,8 @@ const resolvers = {
       args: { placeId: string; lang: string }
     ) => {
       const query = args.lang
-        ? { placeId: args.placeId, lang: args.lang }
-        : { placeId: args.placeId };
+        ? { "place._id": args.placeId, lang: args.lang }
+        : { "place._id": args.placeId };
       return MongoMediaModel.find(query);
     },
   },

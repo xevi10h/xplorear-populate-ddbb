@@ -66,24 +66,37 @@ export default async function PopulateMediaByNumberUseCase({
       (await Promise.all(
         mediaJSON.map(async (media) => {
           try {
+            const mediaModel = new MongoMediaModel({
+              ...media,
+              lang,
+              place,
+              voiceId,
+            });
             const command = new StartSpeechSynthesisTaskCommand({
               Engine: "neural",
-              Text: media?.text || "",
+              Text: mediaModel?.text || "",
               OutputFormat: "mp3",
               OutputS3BucketName: `xplorearpolly`,
-              OutputS3KeyPrefix: `${placeId}/${lang}/`,
+              OutputS3KeyPrefix: `${placeId}/${lang}/${mediaModel._id.toString()}`,
               VoiceId: voiceId,
               LanguageCode: lang,
             });
             const response = await client.send(command);
-
-            return MongoMediaModel.create({
-              ...media,
-              audioUrl: response.SynthesisTask?.OutputUri,
-              lang,
-              placeId,
-              voiceId,
-            });
+            if (response?.SynthesisTask?.OutputUri) {
+              mediaModel.audioUrl = response?.SynthesisTask?.OutputUri;
+              return MongoMediaModel.create({
+                ...mediaJSON,
+                audioUrl: response.SynthesisTask?.OutputUri,
+                lang,
+                place,
+                voiceId,
+              });
+            } else {
+              throw new ApolloError(
+                "Something went wrong while audio was being created",
+                "AWS_POLLY_ERROR_AUDIO_WAS_BEEN_CREATED"
+              );
+            }
           } catch (error) {
             console.log("Error", error);
             throw error;

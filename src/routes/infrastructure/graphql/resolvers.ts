@@ -5,7 +5,7 @@ const resolvers = {
   Mutation: {
     populateRoutes: async (
       parent: any,
-      args: { place: string; topic?: string; stops?: number; number?: number }
+      args: { place: string; topic: string; stops?: number; number?: number }
     ) =>
       PopulateRoutesUseCase({
         place: args.place,
@@ -16,8 +16,11 @@ const resolvers = {
   },
 
   Query: {
-    route: async (parent: any, args: { id: string }) =>
-      GetRouteByIdUseCase({ id: args.id }),
+    route: async (parent: any, args: { id: string }) => {
+      const route = await GetRouteByIdUseCase({ id: args.id });
+      console.log(route);
+      return route;
+    },
   },
 };
 

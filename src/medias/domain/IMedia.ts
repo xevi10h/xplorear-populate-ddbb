@@ -1,8 +1,9 @@
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
+import IPlace from "../../places/domain/interfaces/IPlace";
 
 export default interface IMedia {
   _id?: Types.ObjectId;
-  placeId: mongoose.Types.ObjectId;
+  place: IPlace;
   title: string;
   text: string;
   lang: string;

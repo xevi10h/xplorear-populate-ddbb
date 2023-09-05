@@ -1,9 +1,19 @@
 import gql from "graphql-tag";
 
 const typeDefs = gql`
+  type Place {
+    id: ID
+    name: String!
+    address: Address!
+    description: String!
+    importance: Int!
+    rating: Float
+    imagesUrl: [String]
+  }
+
   type Media {
     id: ID
-    placeId: ID
+    place: Place
     title: String!
     text: String!
     lang: String!

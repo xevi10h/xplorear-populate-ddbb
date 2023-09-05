@@ -1,14 +1,17 @@
 import { Configuration, OpenAIApi } from "openai";
 import PopulatePlaceByNameUseCase from "../../places/application/PopulatePlaceByNameUseCase";
-import PopulateMediaByTopicUseCase from "../../media/application/PopulateMediaByTopicUseCase";
+import PopulateMediaByTopicUseCase from "../../medias/application/PopulateMediaByTopicUseCase";
 import { Types } from "mongoose";
 import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel";
-import { MongoMediaModel } from "../../media/infrastructure/mongoModel/MongoMediaModel";
+import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
 import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel";
+import { ApolloError } from "apollo-server-errors";
+import { getTrip } from "../infrastructure/osrm/GetTrip";
+import { getRoute } from "../infrastructure/osrm/GetRoute";
 
 interface PopulateRoutesDTO {
   place: string; // Normally will be the city, zone or neighborhood
-  topic?: string;
+  topic: string;
   stops?: number; // The number of new we want to add (1 if not specified)
   number?: number;
 }
@@ -25,8 +28,8 @@ interface RouteJson {
 export default async function PopulateRoutesUseCase({
   place,
   topic,
-  stops = 10,
-  number = 2,
+  stops = 3,
+  number = 1,
 }: PopulateRoutesDTO) {
   try {
     const configuration = new Configuration({
@@ -59,65 +62,88 @@ export default async function PopulateRoutesUseCase({
       (await Promise.all(
         routesJSON.map(async (route: RouteJson) => {
           if (Array.isArray(route.stops)) {
-            const mediaIds = await Promise.all(
+            const allMedias = await Promise.all(
               route.stops.map(async (stop) => {
-                let place = await MongoPlaceModel.findOne({ name: stop.name });
-                if (!place) {
-                  // Si no existe el Place lo creamos desde 0 y le añadimos 10 audios
-                  place = await PopulatePlaceByNameUseCase({
+                try {
+                  let place = await MongoPlaceModel.findOne({
                     name: stop.name,
                   });
-                }
-                // En caso que exista miramos si tiene 3 o más audios y si no creamos 1 y lo devolvemos.
-                const media = await MongoMediaModel.find({
-                  placeId: place._id.toString(),
-                });
-                if (media.length < 3) {
-                  const newMedia = await PopulateMediaByTopicUseCase({
-                    placeId: place._id.toString(),
-                    topic,
+                  if (!place) {
+                    // Si no existe el Place lo creamos desde 0 y le añadimos 1 audio del mismo topico
+                    place = await PopulatePlaceByNameUseCase({
+                      name: stop.name,
+                    });
+                    return PopulateMediaByTopicUseCase({
+                      placeId: place._id.toString(),
+                      topic,
+                    });
+                  }
+                  // En caso que exista miramos si tiene 5 o más audios y si no creamos 1 y lo devolvemos.
+                  const medias = await MongoMediaModel.find({
+                    "place._id": place._id.toString(),
                   });
-                  return newMedia._id;
-                }
-                const placeMedia = await MongoMediaModel.find({
-                  placeId: place._id.toString(),
-                });
-                if (!topic) {
-                  // Si no hay un topico específico quiero que me eliga el primer placeMedia
-                  return placeMedia[0]._id;
-                }
-                const mediaSelectedString = await openai.createChatCompletion({
-                  model: "gpt-3.5-turbo",
-                  messages: [
+                  if (medias.length < 1) {
+                    return PopulateMediaByTopicUseCase({
+                      placeId: place._id.toString(),
+                      topic,
+                    });
+                  }
+                  const mediaSelectedString = await openai.createChatCompletion(
                     {
-                      role: "user",
-                      content: `I want to populate my MongoDB database. What I want you to do is to send me back the object from this array that I am going to send you that best suits my needs.
-                          My data is all this array: ${placeMedia.toString()}
-                          I want you to choose the object whose title, description and text fit best with the theme or topic: ${topic}
-                          The answer you have to give me must be convertible into a JSON directly with the JSON.parse() function so that I can insert it directly into my database. Therefore, you only have to give me back what I ask you (without any introduction or additional text) only what I have asked you strictly.`,
-                    },
-                  ],
-                });
-                const mediaSelectedJSON = JSON.parse(
-                  mediaSelectedString.data.choices[0].message?.content || ""
-                );
-                if (mediaSelectedJSON && mediaSelectedJSON.title) {
-                  const mediaSelected = placeMedia.find(
-                    (pM) => pM.title === mediaSelectedJSON?.title
+                      model: "gpt-3.5-turbo",
+                      messages: [
+                        {
+                          role: "user",
+                          content: `I want to populate my MongoDB database.
+                          My data is this array of strings: [${medias.map(
+                            (media) => media.title
+                          )}]
+                          I want you to choose the string which fit best with the theme or topic: ${topic} and just return this string.
+                          Your response must be just and only the string that you choose. For example: If you choose the string "abcde" you must send me back only: "abcde" and that is all`,
+                        },
+                      ],
+                    }
                   );
-                  if (mediaSelected) return mediaSelected._id;
-                  return undefined;
+                  const mediaSelectedJSON =
+                    mediaSelectedString.data.choices[0].message?.content || "";
+                  return medias.find((pM) => pM.title === mediaSelectedJSON);
+                } catch (error) {
+                  console.log(error);
                 }
-                return undefined;
               })
             );
-            await MongoRouteModel.create({
+            const mediasFiltered = allMedias.filter(
+              (media) =>
+                media?.place.address.coordinates.lat &&
+                media?.place.address.coordinates.lng
+            );
+            const coordinates = mediasFiltered
+              .map(
+                (m) =>
+                  m && [
+                    m.place.address.coordinates.lng,
+                    m.place.address.coordinates.lat,
+                  ]
+              )
+              .filter(Boolean) as [number, number][];
+            const tripData = await getTrip("foot", coordinates);
+            const routeData = await getRoute("foot", coordinates);
+            const stops = mediasFiltered.map((media, index) => {
+              return {
+                media,
+                order: index,
+                optimizedOrder: tripData.waypoints[index].waypoint_index,
+              };
+            });
+            return MongoRouteModel.create({
               title: route.title,
               description: route.description,
-              mediaIds: mediaIds.filter(
-                (id): id is Types.ObjectId => id !== undefined
-              ),
+              stops,
               rating: route.rating,
+              duration: routeData.routes[0].duration,
+              optimizedDuration: tripData.trips[0].duration,
+              distance: routeData.routes[0].distance,
+              optimizedDistance: tripData.trips[0].distance,
             });
           }
         })
