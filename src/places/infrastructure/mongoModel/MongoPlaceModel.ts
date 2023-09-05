@@ -8,7 +8,7 @@ const Photo = {
   height: Number,
 };
 
-const placeSchema = new Schema<IPlace>({
+export const PlaceSchema = new Schema<IPlace>({
   name: { type: String, required: true, unique: true },
   address: {
     coordinates: {
@@ -27,4 +27,4 @@ const placeSchema = new Schema<IPlace>({
   rating: { type: Number },
 });
 
-export const MongoPlaceModel = model("places", placeSchema);
+export const MongoPlaceModel = model("places", PlaceSchema);

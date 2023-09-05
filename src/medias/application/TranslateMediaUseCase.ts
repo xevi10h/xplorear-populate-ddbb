@@ -65,14 +65,14 @@ export default async function TranslateMediaUseCase({
       Text: newText || "",
       OutputFormat: "mp3",
       OutputS3BucketName: "xplorearpolly",
-      OutputS3KeyPrefix: `${media.placeId}/${outputLang}/`,
+      OutputS3KeyPrefix: `${media.place._id}/${outputLang}/`,
       VoiceId: voiceId,
       LanguageCode: outputLang,
     });
     const response = await client.send(command);
     return MongoMediaModel.create({
       rating: media.rating,
-      placeId: media.placeId,
+      place: media.place,
       audioUrl: response.SynthesisTask?.OutputUri || "",
       lang: outputLang,
       text: newText,
