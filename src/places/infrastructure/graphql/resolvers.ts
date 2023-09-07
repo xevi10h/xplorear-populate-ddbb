@@ -1,28 +1,19 @@
-import IAddress from "../../domain/interfaces/IAddress";
-import { MongoPlaceModel } from "../mongoModel/MongoPlaceModel";
 import IPlace from "../../domain/interfaces/IPlace";
 import PopulatePlacesByZoneUseCase from "../../application/PopulatePlacesByZoneUseCase";
 import PopulatePlacesByNameUseCase from "../../application/PopulatePlaceByNameUseCase";
-
-interface PopulatePlaceByNameInput {
-  populatePlaceByNameInput: {
-    name: string;
-    addMedia?: boolean;
-  };
-}
+import GetPlaceByIdUseCase from "../../application/GetPlaceByIdUseCase";
+import GetAllPlacesUseCase from "../../application/GetAllPlacesUseCase";
+import DeletePlaceAndAssociatedMediaUseCase from "../../application/DeletePlaceAndAssociatedMediaUseCase";
+import UpdatePlaceUseCase from "../../application/UpdatePlaceUseCase";
 
 const resolvers = {
-  Query: {
-    place: async (parent: any, args: { id: string }) => {
-      return MongoPlaceModel.findById(args.id);
-    },
-    places: async () => {
-      return MongoPlaceModel.find();
-    },
-  },
   Place: {
     // Resolver para el campo imagesUrl
     imagesUrl: (parent: IPlace) => parent.photos?.map((photo) => photo.url),
+  },
+  Query: {
+    getPlaceById: (_: any, { id }: { id: string }) => GetPlaceByIdUseCase(id),
+    getAllPlaces: () => GetAllPlacesUseCase(),
   },
   Mutation: {
     populatePlaceByZone: async (
@@ -42,35 +33,12 @@ const resolvers = {
         name: args.name,
         addMedia: args.addMedia,
       }),
-
-    createPlace: async (
-      parent: any,
-      args: {
-        name: string;
-        address: IAddress;
-        description: string;
-        importance: number;
-        rating?: number;
-      }
-    ) => {
-      const place = new MongoPlaceModel({
-        name: args.name,
-        address: args.address,
-        description: args.description,
-        importance: args.importance,
-        rating: args.rating,
-      });
-      return place.save();
-    },
-    updatePlace: async (
-      parent: any,
-      args: { id: string; data: Partial<IPlace> }
-    ) => {
-      return MongoPlaceModel.findOneAndUpdate({ _id: args.id }, args.data);
-    },
-    deletePlace: async (parent: any, args: { id: string }) => {
-      return MongoPlaceModel.deleteOne({ _id: args.id });
-    },
+    updatePlace: (
+      _: any,
+      { id, placeUpdate }: { id: string; placeUpdate: Partial<IPlace> }
+    ) => UpdatePlaceUseCase(id, placeUpdate),
+    deletePlace: (_: any, { id }: { id: string }) =>
+      DeletePlaceAndAssociatedMediaUseCase(id),
   },
 };
 

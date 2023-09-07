@@ -1,9 +1,8 @@
-import { Types } from "mongoose";
 import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
 import IPlace from "../domain/interfaces/IPlace";
 
-export async function GetPlaceByIdUseCase(
-  placeId: Types.ObjectId
+export default async function GetPlaceByIdUseCase(
+  placeId: string
 ): Promise<IPlace | null> {
   return await MongoPlaceModel.findById(placeId);
 }
