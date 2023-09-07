@@ -47,7 +47,7 @@ export default async function PopulatePlacesByZoneUseCase({
               "rating": <number> (random float between 0-5 with 2 decimal places, for example: 3.67),
               "description": <string> (Summary description of the monument of about 200 characters approximately)
             }
-            The answer you have to give me must be convertible into a JSON directly with the JSON.parse() function so that I can insert it directly into my database. Therefore, you only have to give me back what I ask you (without any introduction or additional text) only what I have asked you strictly.`,
+            The answer you have to give me must be convertible into an object directly with the JSON.parse() function so that I can insert it directly into my database. Therefore, you only have to give me back what I ask you (without any introduction or additional text) only what I have asked you strictly.`,
         },
       ],
     });
