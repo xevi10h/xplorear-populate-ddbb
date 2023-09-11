@@ -32,22 +32,15 @@ const typeDefs = gql`
   }
 
   type Query {
-    place(id: ID!): Place
-    places: [Place]
+    getPlaceById(id: ID!): Place
+    getAllPlaces: [Place]
   }
 
   type Mutation {
     populatePlaceByZone(zone: String!, number: Int): [Place]
     populatePlaceByName(name: String!, addMedia: Boolean): Place
-    createPlace(
-      name: String!
-      address: AddressInput!
-      description: String!
-      importance: Int!
-      rating: Float
-    ): Place
-    updatePlace(id: ID!, data: UpdatePlaceInput!): Place
-    deletePlace(id: ID!): Boolean
+    updatePlace(id: ID!, placeUpdate: UpdatePlaceInput!): Place
+    deletePlace(id: ID!): Place
   }
 
   input CoordinatesInput {

@@ -61,48 +61,51 @@ export default async function PopulateMediaByNumberUseCase({
     const mediaJSON = JSON.parse(
       mediaString.data.choices[0].message?.content || ""
     );
-    return (
-      Array.isArray(mediaJSON) &&
-      (await Promise.all(
-        mediaJSON.map(async (media) => {
-          try {
-            const mediaModel = new MongoMediaModel({
-              ...media,
+    if (!Array.isArray(mediaJSON)) {
+      throw new ApolloError(
+        "Response from OpenAI is not in the format we were expecting",
+        "OPEN_AI_RESPONSE_BAD_FORMAT"
+      );
+    }
+    return await Promise.all(
+      mediaJSON.map(async (media) => {
+        try {
+          const mediaModel = new MongoMediaModel({
+            ...media,
+            lang,
+            place,
+            voiceId,
+          });
+          const command = new StartSpeechSynthesisTaskCommand({
+            Engine: "neural",
+            Text: mediaModel?.text || "",
+            OutputFormat: "mp3",
+            OutputS3BucketName: `xplorearpolly`,
+            OutputS3KeyPrefix: `${placeId}/${lang}/${mediaModel._id.toString()}`,
+            VoiceId: voiceId,
+            LanguageCode: lang,
+          });
+          const response = await client.send(command);
+          if (response?.SynthesisTask?.OutputUri) {
+            mediaModel.audioUrl = response?.SynthesisTask?.OutputUri;
+            return MongoMediaModel.create({
+              ...mediaJSON,
+              audioUrl: response.SynthesisTask?.OutputUri,
               lang,
               place,
               voiceId,
             });
-            const command = new StartSpeechSynthesisTaskCommand({
-              Engine: "neural",
-              Text: mediaModel?.text || "",
-              OutputFormat: "mp3",
-              OutputS3BucketName: `xplorearpolly`,
-              OutputS3KeyPrefix: `${placeId}/${lang}/${mediaModel._id.toString()}`,
-              VoiceId: voiceId,
-              LanguageCode: lang,
-            });
-            const response = await client.send(command);
-            if (response?.SynthesisTask?.OutputUri) {
-              mediaModel.audioUrl = response?.SynthesisTask?.OutputUri;
-              return MongoMediaModel.create({
-                ...mediaJSON,
-                audioUrl: response.SynthesisTask?.OutputUri,
-                lang,
-                place,
-                voiceId,
-              });
-            } else {
-              throw new ApolloError(
-                "Something went wrong while audio was being created",
-                "AWS_POLLY_ERROR_AUDIO_WAS_BEEN_CREATED"
-              );
-            }
-          } catch (error) {
-            console.log("Error", error);
-            throw error;
+          } else {
+            throw new ApolloError(
+              "Something went wrong while audio was being created",
+              "AWS_POLLY_ERROR_AUDIO_WAS_BEEN_CREATED"
+            );
           }
-        })
-      ))
+        } catch (error) {
+          console.log("Error", error);
+          throw error;
+        }
+      })
     );
   } catch (error) {
     console.log("Error", error);

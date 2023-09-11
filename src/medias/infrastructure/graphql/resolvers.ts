@@ -1,6 +1,11 @@
+import DeleteMediaAndUpdatedAssociatedRoutesUseCase from "../../application/DeleteMediaAndUpdatedAssociatedRoutesUseCase";
+import GetAllMediasUseCase from "../../application/GetAllMediasUseCase";
+import GetMediaByIdUseCase from "../../application/GetMediaByIdUseCase";
+import GetMediasByPlaceIdUseCase from "../../application/GetMediasByPlaceIdUseCase";
 import PopulateMediaByNumberUseCase from "../../application/PopulateMediaByNumberUseCase";
 import PopulateMediaByTopicUseCase from "../../application/PopulateMediaByTopicUseCase";
 import TranslateMediaUseCase from "../../application/TranslateMediaUseCase";
+import UpdateMediaAndAssociatedRoutesUseCase from "../../application/UpdateMediaAndAssociatedRoutesUseCase";
 import IMedia from "../../domain/IMedia";
 import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
 
@@ -31,29 +36,27 @@ const resolvers = {
 
     translateMedia: async (
       parent: any,
-      args: { mediaId: string; outputLang: any }
+      args: { id: string; outputLang: any }
     ) =>
       TranslateMediaUseCase({
-        mediaId: args.mediaId,
+        id: args.id,
         outputLang: args.outputLang?.replace("_", "-"),
       }),
+    updateMedia: (
+      parent: any,
+      args: { id: string; mediaUpdate: Partial<IMedia> }
+    ) => UpdateMediaAndAssociatedRoutesUseCase(args.id, args.mediaUpdate),
+    deleteMedia: (parent: any, args: { id: string }) =>
+      DeleteMediaAndUpdatedAssociatedRoutesUseCase(args.id),
   },
   Query: {
-    media: async (parent: any, args: { id: string }) =>
-      MongoMediaModel.findById(args.id),
-    mediaOfPlace: async (
+    getMediaById: (parent: any, { id }: { id: string }) =>
+      GetMediaByIdUseCase(id),
+    getAllMedias: () => GetAllMediasUseCase(),
+    getMediaOfPlace: async (
       parent: any,
       args: { placeId: string; lang: string }
-    ) => {
-      const query = args.lang
-        ? { "place._id": args.placeId, lang: args.lang }
-        : { "place._id": args.placeId };
-      return MongoMediaModel.find(query);
-    },
-  },
-  Media: {
-    // Resolver para el campo imagesUrl
-    duration: (parent: IMedia) => 1,
+    ) => GetMediasByPlaceIdUseCase(args.placeId, args.lang),
   },
 };
 
