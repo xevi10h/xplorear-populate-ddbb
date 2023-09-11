@@ -4,7 +4,7 @@ import PopulatePlacesByNameUseCase from "../../application/PopulatePlaceByNameUs
 import GetPlaceByIdUseCase from "../../application/GetPlaceByIdUseCase";
 import GetAllPlacesUseCase from "../../application/GetAllPlacesUseCase";
 import DeletePlaceAndAssociatedMediaUseCase from "../../application/DeletePlaceAndAssociatedMediaUseCase";
-import UpdatePlaceUseCase from "../../application/UpdatePlaceUseCase";
+import UpdatePlaceAndAssociatedMediaUseCase from "../../application/UpdatePlaceAndAssociatedMediaUseCase";
 
 const resolvers = {
   Place: {
@@ -12,7 +12,8 @@ const resolvers = {
     imagesUrl: (parent: IPlace) => parent.photos?.map((photo) => photo.url),
   },
   Query: {
-    getPlaceById: (_: any, { id }: { id: string }) => GetPlaceByIdUseCase(id),
+    getPlaceById: (_: any, args: { id: string }) =>
+      GetPlaceByIdUseCase(args.id),
     getAllPlaces: () => GetAllPlacesUseCase(),
   },
   Mutation: {
@@ -34,11 +35,11 @@ const resolvers = {
         addMedia: args.addMedia,
       }),
     updatePlace: (
-      _: any,
-      { id, placeUpdate }: { id: string; placeUpdate: Partial<IPlace> }
-    ) => UpdatePlaceUseCase(id, placeUpdate),
-    deletePlace: (_: any, { id }: { id: string }) =>
-      DeletePlaceAndAssociatedMediaUseCase(id),
+      parent: any,
+      args: { id: string; placeUpdate: Partial<IPlace> }
+    ) => UpdatePlaceAndAssociatedMediaUseCase(args.id, args.placeUpdate),
+    deletePlace: (parent: any, args: { id: string }) =>
+      DeletePlaceAndAssociatedMediaUseCase(args.id),
   },
 };
 

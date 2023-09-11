@@ -10,7 +10,6 @@ const typeDefs = gql`
     rating: Float!
     audioUrl: String!
     voiceId: String!
-    duration: Float!
   }
 
   type Place {
@@ -48,10 +47,11 @@ const typeDefs = gql`
       stops: Int # The number of stops of the route (3 if not specified)
       number: Int
     ): [Route]
+    addExistingMediaToRoute(id: String!, mediaId: String!): Route
   }
 
   type Query {
-    route(id: ID!): Route
+    getRouteById(id: ID!): Route
   }
 `;
 export default typeDefs;

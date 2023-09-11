@@ -20,7 +20,6 @@ const typeDefs = gql`
     rating: Float!
     audioUrl: String!
     voiceId: String!
-    duration: Float!
   }
 
   enum Language {
@@ -37,11 +36,23 @@ const typeDefs = gql`
     ): [Media]
     populateMediaByTopic(placeId: String!, topic: String, lang: Language): Media
     translateMedia(mediaId: ID!, outputLang: Language!): Media
+    updateMedia(id: ID!, mediaUpdate: UpdateMediaInput!): Media
+    deleteMedia(id: ID!): Media
   }
 
   type Query {
-    media(id: ID!): Media
-    mediaOfPlace(placeId: ID!, lang: Language): [Media]
+    getMediaById(id: ID!): Media
+    getMediaOfPlace(placeId: ID!, lang: Language): [Media]
+    getAllMedias: [Media]
+  }
+
+  input UpdateMediaInput {
+    title: String
+    text: String
+    lang: String
+    rating: Float
+    audioUrl: String
+    voiceId: String
   }
 `;
 export default typeDefs;

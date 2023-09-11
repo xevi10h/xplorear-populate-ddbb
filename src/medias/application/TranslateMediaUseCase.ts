@@ -9,12 +9,12 @@ import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
 import { ApolloError } from "apollo-server-errors";
 
 interface TranslateMediaDTO {
-  mediaId: string;
+  id: string;
   outputLang: LanguageCode;
 }
 
 export default async function TranslateMediaUseCase({
-  mediaId,
+  id,
   outputLang,
 }: TranslateMediaDTO) {
   let outputLangDeepl: "fr" | "en-US" | "es";
@@ -32,7 +32,7 @@ export default async function TranslateMediaUseCase({
       outputLangDeepl = "en-US";
       break;
   }
-  const media = await MongoMediaModel.findById(mediaId);
+  const media = await MongoMediaModel.findById(id);
   if (!media) {
     throw new ApolloError("Media not found", "MEDIA_NOT_FOUND");
   }

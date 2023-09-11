@@ -1,7 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
 import PopulatePlaceByNameUseCase from "../../places/application/PopulatePlaceByNameUseCase";
 import PopulateMediaByTopicUseCase from "../../medias/application/PopulateMediaByTopicUseCase";
-import { Types } from "mongoose";
 import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel";
 import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
 import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel";
@@ -57,97 +56,98 @@ export default async function PopulateRoutesUseCase({
     const routesJSON = JSON.parse(
       routesString.data.choices[0].message?.content || ""
     );
-    return (
-      Array.isArray(routesJSON) &&
-      (await Promise.all(
-        routesJSON.map(async (route: RouteJson) => {
-          if (Array.isArray(route.stops)) {
-            const allMedias = await Promise.all(
-              route.stops.map(async (stop) => {
-                try {
-                  let place = await MongoPlaceModel.findOne({
+    if (!Array.isArray(routesJSON)) {
+      throw new ApolloError(
+        "Response from OpenAI is not in the format we were expecting",
+        "OPEN_AI_RESPONSE_BAD_FORMAT"
+      );
+    }
+    return await Promise.all(
+      routesJSON.map(async (route: RouteJson) => {
+        if (Array.isArray(route.stops)) {
+          const allMedias = await Promise.all(
+            route.stops.map(async (stop) => {
+              try {
+                let place = await MongoPlaceModel.findOne({
+                  name: stop.name,
+                });
+                if (!place) {
+                  // Si no existe el Place lo creamos desde 0 y le añadimos 1 audio del mismo topico
+                  place = await PopulatePlaceByNameUseCase({
                     name: stop.name,
                   });
-                  if (!place) {
-                    // Si no existe el Place lo creamos desde 0 y le añadimos 1 audio del mismo topico
-                    place = await PopulatePlaceByNameUseCase({
-                      name: stop.name,
-                    });
-                    return PopulateMediaByTopicUseCase({
-                      placeId: place._id.toString(),
-                      topic,
-                    });
-                  }
-                  // En caso que exista miramos si tiene 5 o más audios y si no creamos 1 y lo devolvemos.
-                  const medias = await MongoMediaModel.find({
-                    "place._id": place._id.toString(),
+                  return PopulateMediaByTopicUseCase({
+                    placeId: place._id.toString(),
+                    topic,
                   });
-                  if (medias.length < 1) {
-                    return PopulateMediaByTopicUseCase({
-                      placeId: place._id.toString(),
-                      topic,
-                    });
-                  }
-                  const mediaSelectedString = await openai.createChatCompletion(
+                }
+                // En caso que exista miramos si tiene 5 o más audios y si no creamos 1 y lo devolvemos.
+                const medias = await MongoMediaModel.find({
+                  "place._id": place._id.toString(),
+                });
+                if (medias.length < 1) {
+                  return PopulateMediaByTopicUseCase({
+                    placeId: place._id.toString(),
+                    topic,
+                  });
+                }
+                const mediaSelectedString = await openai.createChatCompletion({
+                  model: "gpt-3.5-turbo",
+                  messages: [
                     {
-                      model: "gpt-3.5-turbo",
-                      messages: [
-                        {
-                          role: "user",
-                          content: `I want to populate my MongoDB database.
+                      role: "user",
+                      content: `I want to populate my MongoDB database.
                           My data is this array of strings: [${medias.map(
                             (media) => media.title
                           )}]
                           I want you to choose the string which fit best with the theme or topic: ${topic} and just return this string.
                           Your response must be just and only the string that you choose. For example: If you choose the string "abcde" you must send me back only: "abcde" and that is all`,
-                        },
-                      ],
-                    }
-                  );
-                  const mediaSelectedJSON =
-                    mediaSelectedString.data.choices[0].message?.content || "";
-                  return medias.find((pM) => pM.title === mediaSelectedJSON);
-                } catch (error) {
-                  console.log(error);
-                }
-              })
-            );
-            const mediasFiltered = allMedias.filter(
-              (media) =>
-                media?.place.address.coordinates.lat &&
-                media?.place.address.coordinates.lng
-            );
-            const coordinates = mediasFiltered
-              .map(
-                (m) =>
-                  m && [
-                    m.place.address.coordinates.lng,
-                    m.place.address.coordinates.lat,
-                  ]
-              )
-              .filter(Boolean) as [number, number][];
-            const tripData = await getTrip("foot", coordinates);
-            const routeData = await getRoute("foot", coordinates);
-            const stops = mediasFiltered.map((media, index) => {
-              return {
-                media,
-                order: index,
-                optimizedOrder: tripData.waypoints[index].waypoint_index,
-              };
-            });
-            return MongoRouteModel.create({
-              title: route.title,
-              description: route.description,
-              stops,
-              rating: route.rating,
-              duration: routeData.routes[0].duration,
-              optimizedDuration: tripData.trips[0].duration,
-              distance: routeData.routes[0].distance,
-              optimizedDistance: tripData.trips[0].distance,
-            });
-          }
-        })
-      ))
+                    },
+                  ],
+                });
+                const mediaSelectedJSON =
+                  mediaSelectedString.data.choices[0].message?.content || "";
+                return medias.find((pM) => pM.title === mediaSelectedJSON);
+              } catch (error) {
+                console.log(error);
+              }
+            })
+          );
+          const mediasFiltered = allMedias.filter(
+            (media) =>
+              media?.place.address.coordinates.lat &&
+              media?.place.address.coordinates.lng
+          );
+          const coordinates = mediasFiltered
+            .map(
+              (m) =>
+                m && [
+                  m.place.address.coordinates.lng,
+                  m.place.address.coordinates.lat,
+                ]
+            )
+            .filter(Boolean) as [number, number][];
+          const tripData = await getTrip("foot", coordinates);
+          const routeData = await getRoute("foot", coordinates);
+          const stops = mediasFiltered.map((media, index) => {
+            return {
+              media,
+              order: index,
+              optimizedOrder: tripData.waypoints[index].waypoint_index,
+            };
+          });
+          return MongoRouteModel.create({
+            title: route.title,
+            description: route.description,
+            stops,
+            rating: route.rating,
+            duration: routeData.routes[0].duration,
+            optimizedDuration: tripData.trips[0].duration,
+            distance: routeData.routes[0].distance,
+            optimizedDistance: tripData.trips[0].distance,
+          });
+        }
+      })
     );
   } catch (error) {
     console.log("Error", error);
