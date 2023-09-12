@@ -1,5 +1,7 @@
 import gql from "graphql-tag";
 const typeDefs = gql`
+  scalar DateTime
+
   input RegisterInput {
     username: String
     email: String!
@@ -22,6 +24,7 @@ const typeDefs = gql`
     id: ID
     email: String!
     username: String!
+    createdAt: DateTime!
     googleId: String
     token: String
   }

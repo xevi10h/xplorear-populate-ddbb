@@ -2,6 +2,7 @@ import { MongoUserModel } from "../mongoModel/MongoUserModel";
 import LoginGoogleUserUseCase from "../../application/LoginGoogleUserUseCase";
 import LoginUserUseCase from "../../application/LoginUserUseCase";
 import RegisterUserUseCase from "../../application/RegisterUserUseCase";
+import { GraphQLScalarType, Kind } from "graphql";
 
 interface RegisterInput {
   registerInput: {
@@ -53,6 +54,29 @@ const resolvers = {
       return MongoUserModel.findById(args.id);
     },
   },
+
+  DateTime: new GraphQLScalarType({
+    name: "DateTime",
+    description: "Una fecha y hora, representada como una cadena ISO-8601",
+    serialize(value: unknown): string {
+      if (!(value instanceof Date)) {
+        throw new Error("El valor no es una instancia de Date");
+      }
+      return value.toISOString();
+    },
+    parseValue(value: unknown): Date {
+      if (!(value instanceof Date)) {
+        throw new Error("El valor no es una instancia de Date");
+      }
+      return new Date(value); // Recibe la fecha del cliente
+    },
+    parseLiteral(ast): Date | null {
+      if (ast.kind === Kind.STRING) {
+        return new Date(ast.value); // Recibe la fecha del AST
+      }
+      return null;
+    },
+  }),
 };
 
 export default resolvers;
