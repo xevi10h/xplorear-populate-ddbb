@@ -12,9 +12,8 @@ const resolvers = {
     imagesUrl: (parent: IPlace) => parent.photos?.map((photo) => photo.url),
   },
   Query: {
-    getPlaceById: (_: any, args: { id: string }) =>
-      GetPlaceByIdUseCase(args.id),
-    getAllPlaces: () => GetAllPlacesUseCase(),
+    place: (_: any, args: { id: string }) => GetPlaceByIdUseCase(args.id),
+    places: () => GetAllPlacesUseCase(),
   },
   Mutation: {
     populatePlaceByZone: async (

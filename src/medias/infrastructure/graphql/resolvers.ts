@@ -1,5 +1,4 @@
 import DeleteMediaAndUpdatedAssociatedRoutesUseCase from "../../application/DeleteMediaAndUpdatedAssociatedRoutesUseCase";
-import GetAllMediasUseCase from "../../application/GetAllMediasUseCase";
 import GetMediaByIdUseCase from "../../application/GetMediaByIdUseCase";
 import GetMediasByPlaceIdUseCase from "../../application/GetMediasByPlaceIdUseCase";
 import PopulateMediaByNumberUseCase from "../../application/PopulateMediaByNumberUseCase";
@@ -7,7 +6,6 @@ import PopulateMediaByTopicUseCase from "../../application/PopulateMediaByTopicU
 import TranslateMediaUseCase from "../../application/TranslateMediaUseCase";
 import UpdateMediaAndAssociatedRoutesUseCase from "../../application/UpdateMediaAndAssociatedRoutesUseCase";
 import IMedia from "../../domain/IMedia";
-import { MongoMediaModel } from "../mongoModel/MongoMediaModel";
 
 const resolvers = {
   Mutation: {
@@ -50,13 +48,9 @@ const resolvers = {
       DeleteMediaAndUpdatedAssociatedRoutesUseCase(args.id),
   },
   Query: {
-    getMediaById: (parent: any, { id }: { id: string }) =>
-      GetMediaByIdUseCase(id),
-    getAllMedias: () => GetAllMediasUseCase(),
-    getMediaOfPlace: async (
-      parent: any,
-      args: { placeId: string; lang: string }
-    ) => GetMediasByPlaceIdUseCase(args.placeId, args.lang),
+    media: (parent: any, { id }: { id: string }) => GetMediaByIdUseCase(id),
+    medias: async (parent: any, args: { placeId: string; lang: string }) =>
+      GetMediasByPlaceIdUseCase(args.placeId, args.lang),
   },
 };
 

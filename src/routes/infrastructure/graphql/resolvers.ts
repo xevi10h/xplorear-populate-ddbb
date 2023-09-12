@@ -21,7 +21,7 @@ const resolvers = {
   },
 
   Query: {
-    getRouteById: async (parent: any, args: { id: string }) => {
+    route: async (parent: any, args: { id: string }) => {
       const route = await GetRouteByIdUseCase({ id: args.id });
       return route;
     },

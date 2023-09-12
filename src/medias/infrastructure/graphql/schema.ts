@@ -41,9 +41,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    getMediaById(id: ID!): Media
-    getMediaOfPlace(placeId: ID!, lang: Language): [Media]
-    getAllMedias: [Media]
+    media(id: ID!): Media
+    medias(placeId: ID, lang: Language): [Media]
   }
 
   input UpdateMediaInput {

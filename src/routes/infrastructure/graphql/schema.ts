@@ -51,7 +51,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    getRouteById(id: ID!): Route
+    route(id: ID!): Route
   }
 `;
 export default typeDefs;

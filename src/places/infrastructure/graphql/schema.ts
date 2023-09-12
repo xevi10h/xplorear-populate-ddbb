@@ -32,8 +32,8 @@ const typeDefs = gql`
   }
 
   type Query {
-    getPlaceById(id: ID!): Place
-    getAllPlaces: [Place]
+    place(id: ID!): Place
+    places: [Place]
   }
 
   type Mutation {

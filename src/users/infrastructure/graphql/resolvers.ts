@@ -50,7 +50,7 @@ const resolvers = {
     },
   },
   Query: {
-    getUserById: async (parent: any, args: { id: string }) => {
+    user: async (parent: any, args: { id: string }) => {
       return MongoUserModel.findById(args.id);
     },
   },
