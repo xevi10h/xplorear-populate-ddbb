@@ -27,7 +27,7 @@ export default async function LoginUserUseCase({
     // Create a new JWT
     const token = jwt.sign(
       { email: user.email.toLowerCase(), username: user.username },
-      "UNSAFE_STRING",
+      process.env.SECRET_KEY!,
       { expiresIn: "1d" }
     );
 

@@ -5,6 +5,7 @@ import { mergeResolvers, mergeTypeDefs } from "@graphql-tools/merge";
 import connection from "./connection";
 import { loadFilesSync } from "@graphql-tools/load-files";
 import path from "path";
+import { checkToken } from "./middleware/auth";
 
 connection;
 
@@ -31,7 +32,7 @@ const server = new ApolloServer<MyContext>({
 });
 
 export default startStandaloneServer(server, {
-  context: async ({ req }) => ({ token: req.headers.token }),
+  context: async ({ req }) => checkToken(req.headers.authorization || ""),
   listen: { port: 4000 },
 });
 

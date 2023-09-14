@@ -10,7 +10,7 @@ export default async function GetMediasByPlaceIdUseCase(
     Object.assign(query, { "place._id": placeId });
   }
   if (lang) {
-    Object.assign(query, { lang });
+    Object.assign(query, { lang: lang.replace("_", "-") });
   }
   return MongoMediaModel.find(query);
 }

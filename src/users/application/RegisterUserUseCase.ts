@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import IUser from "../domain/IUser";
 import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel";
 import { ApolloError } from "apollo-server-errors";
 
@@ -46,7 +45,7 @@ export default async function RegisterUserUseCase({
   // Create JWT
   const token = jwt.sign(
     { email: email.toLowerCase(), username },
-    "UNSAFE_STRING",
+    process.env.SECRET_KEY!,
     { expiresIn: "1d" }
   );
   newUser.token = token;

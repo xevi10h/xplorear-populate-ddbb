@@ -35,7 +35,9 @@ export default async function LoginGoogleUserUseCase({
       createdAt: new Date(),
     });
   }
-  const token = jwt.sign({ userId: user._id }, "secret", { expiresIn: "1d" });
+  const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY!, {
+    expiresIn: "1d",
+  });
   user.token = token;
   return user.save();
 }
