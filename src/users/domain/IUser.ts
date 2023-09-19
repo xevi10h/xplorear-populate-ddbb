@@ -4,7 +4,7 @@ export default interface IUser {
   _id?: Types.ObjectId;
   email: string;
   username: string;
-  createdAt: Date;
+  createdAt?: Date;
   name?: string;
   photo?: string;
   hashedPassword?: string;

@@ -1,8 +1,8 @@
-import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
-import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel";
+import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel.js";
+import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel.js";
 import { ApolloError } from "apollo-server-errors";
-import { getTrip } from "../infrastructure/osrm/GetTrip";
-import { getRoute } from "../infrastructure/osrm/GetRoute";
+import { getTrip } from "../infrastructure/osrm/GetTrip.js";
+import { getRoute } from "../infrastructure/osrm/GetRoute.js";
 
 export default async function AddExistingMediaToRouteUseCase(
   id: string,

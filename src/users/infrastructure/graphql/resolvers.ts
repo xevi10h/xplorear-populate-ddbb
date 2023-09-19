@@ -1,8 +1,9 @@
-import { MongoUserModel } from "../mongoModel/MongoUserModel";
-import LoginGoogleUserUseCase from "../../application/LoginGoogleUserUseCase";
-import LoginUserUseCase from "../../application/LoginUserUseCase";
-import RegisterUserUseCase from "../../application/RegisterUserUseCase";
+import { MongoUserModel } from "../mongoModel/MongoUserModel.js";
+import LoginGoogleUserUseCase from "../../application/LoginGoogleUserUseCase.js";
+import LoginUserUseCase from "../../application/LoginUserUseCase.js";
+import RegisterUserUseCase from "../../application/RegisterUserUseCase.js";
 import { GraphQLScalarType, Kind } from "graphql";
+import { checkToken } from "../../../middleware/auth.js";
 
 interface RegisterInput {
   registerInput: {
@@ -50,7 +51,12 @@ const resolvers = {
     },
   },
   Query: {
-    user: async (parent: any, args: { id: string }) => {
+    user: async (
+      parent: any,
+      args: { id: string },
+      { token }: { token: string }
+    ) => {
+      checkToken(token);
       return MongoUserModel.findById(args.id);
     },
   },

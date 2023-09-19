@@ -1,23 +1,14 @@
-import { ApolloError, AuthenticationError } from "apollo-server-errors";
 import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY!;
 
-export const checkToken = (authorization: string) => {
-  if (!authorization) {
-    throw new GraphQLError("No token provided", {
-      extensions: {
-        code: "UNAUTHENTICATED",
-        http: { status: 401 },
-      },
-    });
-  }
-
-  const token = authorization.split(" ")[1];
-
+export const checkToken = (token: string) => {
   if (!token) {
-    throw new GraphQLError("Token format not valid", {
+    throw new GraphQLError("No token provided", {
       extensions: {
         code: "UNAUTHENTICATED",
         http: { status: 401 },

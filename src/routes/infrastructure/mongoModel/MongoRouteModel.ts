@@ -1,7 +1,7 @@
-import { model, Schema, Types } from "mongoose";
-import IRoute from "../../domain/IRoute";
-import { MediaSchema } from "../../../medias/infrastructure/mongoModel/MongoMediaModel";
-import IStop from "../../domain/IStop";
+import { model, Schema } from "mongoose";
+import IRoute from "../../domain/IRoute.js";
+import { MediaSchema } from "../../../medias/infrastructure/mongoModel/MongoMediaModel.js";
+import IStop from "../../domain/IStop.js";
 
 const StopSchema = new Schema<IStop>({
   order: { type: Number, required: true },

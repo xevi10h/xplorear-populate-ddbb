@@ -1,9 +1,9 @@
-import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
+import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
 import { ApolloError } from "apollo-server-errors";
-import IMedia from "../domain/IMedia";
-import { MongoRouteModel } from "../../routes/infrastructure/mongoModel/MongoRouteModel";
-import { getTrip } from "../../routes/infrastructure/osrm/GetTrip";
-import { getRoute } from "../../routes/infrastructure/osrm/GetRoute";
+import IMedia from "../domain/IMedia.js";
+import { MongoRouteModel } from "../../routes/infrastructure/mongoModel/MongoRouteModel.js";
+import { getTrip } from "../../routes/infrastructure/osrm/GetTrip.js";
+import { getRoute } from "../../routes/infrastructure/osrm/GetRoute.js";
 
 export default async function DeleteMediaAndUpdatedAssociatedRoutesUseCase(
   id: string

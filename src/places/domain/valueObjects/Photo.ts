@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import IPhoto from "../interfaces/IPhoto";
+import IPhoto from "../interfaces/IPhoto.js";
 export default class Photo implements IPhoto {
   _id: Types.ObjectId;
   pexelsId: string;

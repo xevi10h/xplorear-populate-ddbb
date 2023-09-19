@@ -1,12 +1,12 @@
 import { Configuration, OpenAIApi } from "openai";
-import PopulatePlaceByNameUseCase from "../../places/application/PopulatePlaceByNameUseCase";
-import PopulateMediaByTopicUseCase from "../../medias/application/PopulateMediaByTopicUseCase";
-import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel";
-import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
-import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel";
+import PopulatePlaceByNameUseCase from "../../places/application/PopulatePlaceByNameUseCase.js";
+import PopulateMediaByTopicUseCase from "../../medias/application/PopulateMediaByTopicUseCase.js";
+import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel.js";
+import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel.js";
+import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel.js";
 import { ApolloError } from "apollo-server-errors";
-import { getTrip } from "../infrastructure/osrm/GetTrip";
-import { getRoute } from "../infrastructure/osrm/GetRoute";
+import { getTrip } from "../infrastructure/osrm/GetTrip.js";
+import { getRoute } from "../infrastructure/osrm/GetRoute.js";
 
 interface PopulateRoutesDTO {
   place: string; // Normally will be the city, zone or neighborhood

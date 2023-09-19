@@ -1,5 +1,5 @@
-import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
-import IMedia from "../domain/IMedia";
+import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
+import IMedia from "../domain/IMedia.js";
 
 export default async function GetMediaByIdUseCase(
   id: string

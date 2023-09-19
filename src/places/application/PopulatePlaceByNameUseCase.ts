@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from "openai";
 import { Photo as PexelsPhoto, createClient } from "pexels";
-import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase";
-import Photo from "../domain/valueObjects/Photo";
-import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
+import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase.js";
+import Photo from "../domain/valueObjects/Photo.js";
+import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel.js";
 
 interface PopulatePlaceByNameDTO {
   name: string; // Name of the place of interest I want to add

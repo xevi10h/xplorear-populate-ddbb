@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose";
-import IPlace from "../../domain/interfaces/IPlace";
+import IPlace from "../../domain/interfaces/IPlace.js";
 
 const Photo = {
   id: String,

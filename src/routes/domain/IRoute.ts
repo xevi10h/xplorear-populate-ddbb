@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import IStop from "./IStop";
+import IStop from "./IStop.js";
 
 export default interface IRoute {
   _id?: Types.ObjectId;

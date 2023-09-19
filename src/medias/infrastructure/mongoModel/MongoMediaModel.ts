@@ -1,6 +1,6 @@
 import { model, Schema, Types } from "mongoose";
-import IMedia from "../../domain/IMedia";
-import { PlaceSchema } from "../../../places/infrastructure/mongoModel/MongoPlaceModel";
+import IMedia from "../../domain/IMedia.js";
+import { PlaceSchema } from "../../../places/infrastructure/mongoModel/MongoPlaceModel.js";
 
 export const MediaSchema = new Schema<IMedia>({
   place: { type: PlaceSchema, required: true },

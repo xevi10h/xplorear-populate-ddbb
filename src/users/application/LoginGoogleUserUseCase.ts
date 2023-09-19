@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel";
-import IUser from "../domain/IUser";
+import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel.js";
+import IUser from "../domain/IUser.js";
 
 interface LoginGoogleUserDTO {
   email: string;
@@ -35,9 +35,13 @@ export default async function LoginGoogleUserUseCase({
       createdAt: new Date(),
     });
   }
-  const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY!, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { email: user.email.toLowerCase(), username: user.username },
+    process.env.SECRET_KEY!,
+    {
+      expiresIn: "1d",
+    }
+  );
   user.token = token;
   return user.save();
 }

@@ -1,9 +1,8 @@
-import { MongoRouteModel } from "../../routes/infrastructure/mongoModel/MongoRouteModel";
-import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
-import IMedia from "../domain/IMedia";
-import { ApolloError } from "apollo-server-errors";
-import { getTrip } from "../../routes/infrastructure/osrm/GetTrip";
-import { getRoute } from "../../routes/infrastructure/osrm/GetRoute";
+import { MongoRouteModel } from "../../routes/infrastructure/mongoModel/MongoRouteModel.js";
+import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
+import IMedia from "../domain/IMedia.js";
+import { getTrip } from "../../routes/infrastructure/osrm/GetTrip.js";
+import { getRoute } from "../../routes/infrastructure/osrm/GetRoute.js";
 
 export default async function UpdateMediaAndAssociatedRoutesUseCase(
   id: string,

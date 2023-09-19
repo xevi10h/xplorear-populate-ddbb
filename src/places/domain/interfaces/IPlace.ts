@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
-import IPhoto from "./IPhoto";
-import IAddress from "./IAddress";
+import IPhoto from "./IPhoto.js";
+import IAddress from "./IAddress.js";
 
 export default interface IPlace {
   _id?: Types.ObjectId;

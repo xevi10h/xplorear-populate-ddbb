@@ -5,7 +5,7 @@ import {
 } from "@aws-sdk/client-polly"; // ES Modules import
 import * as deepl from "deepl-node";
 import { DescribeVoicesCommand } from "@aws-sdk/client-polly";
-import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
+import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
 import { ApolloError } from "apollo-server-errors";
 
 interface TranslateMediaDTO {

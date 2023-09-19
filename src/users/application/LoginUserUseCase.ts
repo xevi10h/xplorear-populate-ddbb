@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import IUser from "../domain/IUser";
-import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel";
+import IUser from "../domain/IUser.js";
+import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel.js";
 import { ApolloError } from "apollo-server-errors";
 
 interface LoginUserDTO {
@@ -15,7 +15,7 @@ export default async function LoginUserUseCase({
 }: LoginUserDTO): Promise<IUser> {
   // See if the user exists with the email
   const user = await MongoUserModel.findOne({
-    $or: [{ email: emailOrUsername, username: emailOrUsername }],
+    $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
   });
 
   // Check if the entered password equals the encrypted password

@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import IPlace from "../../places/domain/interfaces/IPlace";
+import IPlace from "../../places/domain/interfaces/IPlace.js";
 
 export default interface IMedia {
   _id?: Types.ObjectId;

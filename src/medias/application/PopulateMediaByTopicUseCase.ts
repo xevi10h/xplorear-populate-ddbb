@@ -5,8 +5,8 @@ import {
   DescribeVoicesCommand,
   LanguageCode,
 } from "@aws-sdk/client-polly"; // ES Modules import
-import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel";
-import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel";
+import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel.js";
+import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
 import { ApolloError } from "apollo-server-errors";
 
 interface PopulateMediaByTopicDTO {

@@ -1,9 +1,5 @@
-import { MongoPlaceModel } from "../../places/infrastructure/mongoModel/MongoPlaceModel";
-import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
-import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel";
-import { getTrip } from "../infrastructure/osrm/GetTrip";
+import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel.js";
 import { ApolloError } from "apollo-server-errors";
-import { getRoute } from "../infrastructure/osrm/GetRoute";
 
 interface GetRouteByIdDTO {
   id: string;

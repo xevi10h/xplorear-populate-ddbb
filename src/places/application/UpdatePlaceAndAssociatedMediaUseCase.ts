@@ -1,7 +1,7 @@
-import IPlace from "../domain/interfaces/IPlace";
-import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
-import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel";
-import UpdateMediaAndAssociatedRoutesUseCase from "../../medias/application/UpdateMediaAndAssociatedRoutesUseCase";
+import IPlace from "../domain/interfaces/IPlace.js";
+import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel.js";
+import { MongoMediaModel } from "../../medias/infrastructure/mongoModel/MongoMediaModel.js";
+import UpdateMediaAndAssociatedRoutesUseCase from "../../medias/application/UpdateMediaAndAssociatedRoutesUseCase.js";
 
 export default async function UpdatePlaceAndAssociatedMediaUseCase(
   placeId: string,

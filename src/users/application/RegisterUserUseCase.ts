@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel";
+import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel.js";
 import { ApolloError } from "apollo-server-errors";
 
 interface RegisterUserDTO {
@@ -39,7 +39,7 @@ export default async function RegisterUserUseCase({
   const newUser = new MongoUserModel({
     username,
     email: email.toLowerCase(),
-    password: encryptedPassword,
+    hashedPassword: encryptedPassword,
     createdAt: new Date(),
   });
   // Create JWT

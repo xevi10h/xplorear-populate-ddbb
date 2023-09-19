@@ -1,9 +1,9 @@
 import { Configuration, OpenAIApi } from "openai";
 import { Photo as PexelsPhoto, createClient } from "pexels";
-import Photo from "../domain/valueObjects/Photo";
-import IPlace from "../domain/interfaces/IPlace";
-import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase";
-import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel";
+import Photo from "../domain/valueObjects/Photo.js";
+import IPlace from "../domain/interfaces/IPlace.js";
+import PopulateMediaUseCase from "../../medias/application/PopulateMediaByNumberUseCase.js";
+import { MongoPlaceModel } from "../infrastructure/mongoModel/MongoPlaceModel.js";
 import { ApolloError } from "apollo-server-errors";
 
 interface PopulatePlacesByZoneDTO {
