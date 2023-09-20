@@ -6,7 +6,7 @@ const typeDefs = gql`
     place: Place!
     title: String!
     text: String!
-    lang: String!
+    language: String!
     rating: Float!
     audioUrl: String!
     voiceId: String!

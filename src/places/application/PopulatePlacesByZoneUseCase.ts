@@ -83,7 +83,7 @@ export default async function PopulatePlacesByZoneUseCase({
           await PopulateMediaUseCase({
             placeId: placeCreated._id.toString(),
             number: 10,
-            lang: "en-US",
+            language: "en-US",
           });
         }
         return placeCreated;

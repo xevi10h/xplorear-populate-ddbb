@@ -10,6 +10,7 @@ interface RegisterInput {
     username: string;
     email: string;
     password: string;
+    language?: string;
   };
 }
 
@@ -26,6 +27,7 @@ interface LoginGoogleInput {
     googleId: string;
     name: string;
     photo: string;
+    language?: string;
   };
 }
 

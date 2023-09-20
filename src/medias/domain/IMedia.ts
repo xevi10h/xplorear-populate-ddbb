@@ -6,7 +6,7 @@ export default interface IMedia {
   place: IPlace;
   title: string;
   text: string;
-  lang: string;
+  language: string;
   rating: number;
   audioUrl: string;
   voiceId: string;

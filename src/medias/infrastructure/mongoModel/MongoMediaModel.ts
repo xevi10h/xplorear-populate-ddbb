@@ -6,7 +6,7 @@ export const MediaSchema = new Schema<IMedia>({
   place: { type: PlaceSchema, required: true },
   title: { type: String, required: true },
   text: { type: String, required: true },
-  lang: { type: String, required: true },
+  language: { type: String, required: true },
   rating: { type: Number, required: true },
   audioUrl: { type: String, required: true },
   voiceId: { type: String, required: true },

@@ -12,14 +12,14 @@ const resolvers = {
   Mutation: {
     populateMediaByNumber: async (
       parent: any,
-      args: { placeId: string; number?: number; lang?: any },
+      args: { placeId: string; number?: number; language?: any },
       { token }: { token: string }
     ) => {
       checkToken(token);
       return PopulateMediaByNumberUseCase({
         placeId: args.placeId,
         number: args.number,
-        lang: args.lang?.replace("_", "-"),
+        language: args.language?.replace("_", "-"),
       });
     },
     populateMediaByTopic: async (
@@ -27,7 +27,7 @@ const resolvers = {
       args: {
         placeId: string;
         topic?: string;
-        lang?: any;
+        language?: any;
       },
       { token }: { token: string }
     ) => {
@@ -35,19 +35,19 @@ const resolvers = {
       return PopulateMediaByTopicUseCase({
         placeId: args.placeId,
         topic: args.topic,
-        lang: args.lang?.replace("_", "-"),
+        language: args.language?.replace("_", "-"),
       });
     },
 
     translateMedia: async (
       parent: any,
-      args: { id: string; outputLang: any },
+      args: { id: string; outputLanguage: any },
       { token }: { token: string }
     ) => {
       checkToken(token);
       return TranslateMediaUseCase({
         id: args.id,
-        outputLang: args.outputLang?.replace("_", "-"),
+        outputLanguage: args.outputLanguage?.replace("_", "-"),
       });
     },
     updateMedia: (
@@ -78,11 +78,11 @@ const resolvers = {
     },
     medias: async (
       parent: any,
-      args: { placeId: string; lang: string },
+      args: { placeId: string; language: string },
       { token }: { token: string }
     ) => {
       checkToken(token);
-      return GetMediasByPlaceIdUseCase(args.placeId, args.lang);
+      return GetMediasByPlaceIdUseCase(args.placeId, args.language);
     },
   },
 };

@@ -16,7 +16,7 @@ const typeDefs = gql`
     place: Place
     title: String!
     text: String!
-    lang: String!
+    language: String!
     rating: Float!
     audioUrl: String!
     voiceId: String!
@@ -32,23 +32,27 @@ const typeDefs = gql`
     populateMediaByNumber(
       placeId: String!
       number: Int
-      lang: Language
+      language: Language
     ): [Media]
-    populateMediaByTopic(placeId: String!, topic: String, lang: Language): Media
-    translateMedia(mediaId: ID!, outputLang: Language!): Media
+    populateMediaByTopic(
+      placeId: String!
+      topic: String
+      language: Language
+    ): Media
+    translateMedia(mediaId: ID!, outputLanguage: Language!): Media
     updateMedia(id: ID!, mediaUpdate: UpdateMediaInput!): Media
     deleteMedia(id: ID!): Media
   }
 
   type Query {
     media(id: ID!): Media
-    medias(placeId: ID, lang: Language): [Media]
+    medias(placeId: ID, language: Language): [Media]
   }
 
   input UpdateMediaInput {
     title: String
     text: String
-    lang: String
+    language: String
     rating: Float
     audioUrl: String
     voiceId: String

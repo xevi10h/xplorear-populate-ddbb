@@ -7,6 +7,7 @@ const typeDefs = gql`
     username: String
     email: String!
     password: String!
+    language: String
   }
 
   input LoginInput {
@@ -19,6 +20,7 @@ const typeDefs = gql`
     googleId: String!
     name: String
     photo: String
+    language: String
   }
 
   type User {
@@ -28,6 +30,9 @@ const typeDefs = gql`
     createdAt: DateTime!
     googleId: String
     token: String
+    language: String
+    name: String
+    photo: String
   }
 
   type Mutation {

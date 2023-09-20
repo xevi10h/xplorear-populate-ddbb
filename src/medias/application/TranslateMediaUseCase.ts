@@ -10,26 +10,26 @@ import { ApolloError } from "apollo-server-errors";
 
 interface TranslateMediaDTO {
   id: string;
-  outputLang: LanguageCode;
+  outputLanguage: LanguageCode;
 }
 
 export default async function TranslateMediaUseCase({
   id,
-  outputLang,
+  outputLanguage,
 }: TranslateMediaDTO) {
-  let outputLangDeepl: "fr" | "en-US" | "es";
-  switch (outputLang) {
+  let outputLanguageDeepl: "fr" | "en-US" | "es";
+  switch (outputLanguage) {
     case "fr-FR":
-      outputLangDeepl = "fr";
+      outputLanguageDeepl = "fr";
       break;
     case "en-US":
-      outputLangDeepl = "en-US";
+      outputLanguageDeepl = "en-US";
       break;
     case "es-ES":
-      outputLangDeepl = "es";
+      outputLanguageDeepl = "es";
       break;
     default:
-      outputLangDeepl = "en-US";
+      outputLanguageDeepl = "en-US";
       break;
   }
   const media = await MongoMediaModel.findById(id);
@@ -44,15 +44,15 @@ export default async function TranslateMediaUseCase({
     const { text: newTitle } = await translator.translateText(
       media.title,
       null,
-      outputLangDeepl
+      outputLanguageDeepl
     );
     const { text: newText } = await translator.translateText(
       media.text,
       null,
-      outputLangDeepl
+      outputLanguageDeepl
     );
     const commandListVoices = new DescribeVoicesCommand({
-      LanguageCode: outputLang,
+      LanguageCode: outputLanguage,
       Engine: "neural",
     });
     const responsesListVoices = await client.send(commandListVoices);
@@ -65,16 +65,16 @@ export default async function TranslateMediaUseCase({
       Text: newText || "",
       OutputFormat: "mp3",
       OutputS3BucketName: "xplorearpolly",
-      OutputS3KeyPrefix: `${media.place._id}/${outputLang}/`,
+      OutputS3KeyPrefix: `${media.place._id}/${outputLanguage}/`,
       VoiceId: voiceId,
-      LanguageCode: outputLang,
+      LanguageCode: outputLanguage,
     });
     const response = await client.send(command);
     return MongoMediaModel.create({
       rating: media.rating,
       place: media.place,
       audioUrl: response.SynthesisTask?.OutputUri || "",
-      lang: outputLang,
+      language: outputLanguage,
       text: newText,
       title: newTitle,
       voiceId,

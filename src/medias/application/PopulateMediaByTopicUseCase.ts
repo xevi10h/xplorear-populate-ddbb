@@ -11,13 +11,13 @@ import { ApolloError } from "apollo-server-errors";
 
 interface PopulateMediaByTopicDTO {
   placeId: string; // Normally will be the city
-  lang?: LanguageCode;
+  language?: LanguageCode;
   topic?: string;
 }
 
 export default async function PopulateMediaByTopicUseCase({
   placeId,
-  lang = "en-US",
+  language = "en-US",
   topic,
 }: PopulateMediaByTopicDTO) {
   const place = await MongoPlaceModel.findById(placeId);
@@ -34,7 +34,7 @@ export default async function PopulateMediaByTopicUseCase({
   });
   try {
     const commandListVoices = new DescribeVoicesCommand({
-      LanguageCode: lang,
+      LanguageCode: language,
       Engine: "neural",
     });
     const responsesListVoices = await client.send(commandListVoices);
@@ -71,7 +71,7 @@ export default async function PopulateMediaByTopicUseCase({
     try {
       const mediaModel = new MongoMediaModel({
         ...mediaJSON,
-        lang,
+        language,
         place,
         voiceId,
       });
@@ -80,9 +80,9 @@ export default async function PopulateMediaByTopicUseCase({
         Text: mediaJSON?.text || "",
         OutputFormat: "mp3",
         OutputS3BucketName: `xplorearpolly`,
-        OutputS3KeyPrefix: `${placeId}/${lang}/${mediaModel._id.toString()}`,
+        OutputS3KeyPrefix: `${placeId}/${language}/${mediaModel._id.toString()}`,
         VoiceId: voiceId,
-        LanguageCode: lang,
+        LanguageCode: language,
       });
       const response = await client.send(command);
       if (response?.SynthesisTask?.OutputUri) {
@@ -90,7 +90,7 @@ export default async function PopulateMediaByTopicUseCase({
         return MongoMediaModel.create({
           ...mediaJSON,
           audioUrl: response.SynthesisTask?.OutputUri,
-          lang,
+          language,
           place,
           voiceId,
         });
