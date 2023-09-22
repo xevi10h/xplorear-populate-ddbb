@@ -2,6 +2,7 @@ import { MongoUserModel } from "../mongoModel/MongoUserModel.js";
 import LoginGoogleUserUseCase from "../../application/LoginGoogleUserUseCase.js";
 import LoginUserUseCase from "../../application/LoginUserUseCase.js";
 import RegisterUserUseCase from "../../application/RegisterUserUseCase.js";
+import UpdateUserUseCase from "../../application/UpdateUserUseCase.js";
 import { GraphQLScalarType, Kind } from "graphql";
 import { checkToken } from "../../../middleware/auth.js";
 
@@ -31,13 +32,23 @@ interface LoginGoogleInput {
   };
 }
 
+interface UpdateUserInput {
+  updateUserInput: {
+    id: string;
+    username?: string;
+    name?: string;
+    photo?: string;
+    language?: string;
+  };
+}
+
 const resolvers = {
   Mutation: {
     registerUser: async (
       parent: any,
-      { registerInput: { username, email, password } }: RegisterInput
+      { registerInput: { username, email, password, language } }: RegisterInput
     ) => {
-      return RegisterUserUseCase({ username, email, password });
+      return RegisterUserUseCase({ username, email, password, language });
     },
     loginUser: async (
       parent: any,
@@ -47,9 +58,28 @@ const resolvers = {
     },
     loginGoogleUser: async (
       parent: any,
-      { loginGoogleInput: { email, googleId, name, photo } }: LoginGoogleInput
+      {
+        loginGoogleInput: { email, googleId, name, photo, language },
+      }: LoginGoogleInput
     ) => {
-      return LoginGoogleUserUseCase({ email, googleId, name, photo });
+      return LoginGoogleUserUseCase({ email, googleId, name, photo, language });
+    },
+    updateUser: async (
+      parent: any,
+      {
+        updateUserInput: { id, username, name, photo, language },
+      }: UpdateUserInput,
+      { token }: { token: string }
+    ) => {
+      const user = checkToken(token);
+      return UpdateUserUseCase({
+        tokenUserId: user.id || "",
+        id,
+        username,
+        name,
+        photo,
+        language,
+      });
     },
   },
   Query: {

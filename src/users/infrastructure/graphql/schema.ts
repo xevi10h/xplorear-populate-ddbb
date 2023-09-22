@@ -23,6 +23,14 @@ const typeDefs = gql`
     language: String
   }
 
+  input UpdateUserInput {
+    id: String!
+    username: String
+    name: String
+    photo: String
+    language: String
+  }
+
   type User {
     id: ID
     email: String!
@@ -37,8 +45,9 @@ const typeDefs = gql`
 
   type Mutation {
     registerUser(registerInput: RegisterInput!): User
-    loginUser(loginInput: LoginInput): User
-    loginGoogleUser(loginGoogleInput: LoginGoogleInput): User
+    loginUser(loginInput: LoginInput!): User
+    loginGoogleUser(loginGoogleInput: LoginGoogleInput!): User
+    updateUser(updateUserInput: UpdateUserInput!): User
   }
 
   type Query {

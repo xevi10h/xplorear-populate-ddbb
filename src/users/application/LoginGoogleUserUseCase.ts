@@ -7,6 +7,7 @@ interface LoginGoogleUserDTO {
   googleId: string;
   name?: string;
   photo?: string;
+  language?: string;
 }
 
 export default async function LoginGoogleUserUseCase({
@@ -14,6 +15,7 @@ export default async function LoginGoogleUserUseCase({
   name,
   googleId,
   photo,
+  language,
 }: LoginGoogleUserDTO): Promise<IUser> {
   let user = await MongoUserModel.findOne({ email });
   if (!user) {
@@ -33,10 +35,11 @@ export default async function LoginGoogleUserUseCase({
       googleId,
       photo,
       createdAt: new Date(),
+      language: language || "en_US",
     });
   }
   const token = jwt.sign(
-    { email: user.email.toLowerCase(), username: user.username },
+    { id: user.id, email: user.email.toLowerCase(), username: user.username },
     process.env.SECRET_KEY!,
     {
       expiresIn: "1d",
