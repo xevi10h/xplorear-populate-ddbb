@@ -27,7 +27,7 @@ const typeDefs = gql`
     id: String!
     username: String
     name: String
-    photo: String
+    photoBase64: String
     language: String
   }
 

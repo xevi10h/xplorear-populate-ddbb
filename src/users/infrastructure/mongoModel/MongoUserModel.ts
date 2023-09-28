@@ -28,6 +28,10 @@ const userSchema = new Schema<IUser>({
     },
   },
   token: { type: String },
+  language: {
+    type: String,
+    enum: ["en_US", "fr_FR", "ca_ES", "es_ES"],
+  },
 });
 
 export const MongoUserModel = model("users", userSchema);

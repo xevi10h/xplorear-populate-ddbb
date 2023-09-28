@@ -11,4 +11,5 @@ export default interface IUser {
   hashedPassword?: string;
   googleId?: string;
   token?: string;
+  language: string;
 }

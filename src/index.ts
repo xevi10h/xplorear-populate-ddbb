@@ -11,6 +11,8 @@ import routesTypeDefs from "./routes/infrastructure/graphql/schema.js";
 import routesResolvers from "./routes/infrastructure/graphql/resolvers.js";
 import placesTypeDefs from "./places/infrastructure/graphql/schema.js";
 import placesResolvers from "./places/infrastructure/graphql/resolvers.js";
+import citiesTypeDefs from "./cities/infrastructure/graphql/schema.js";
+import citiesResolvers from "./cities/infrastructure/graphql/resolvers.js";
 
 dotenv.config();
 
@@ -19,12 +21,14 @@ const typeDefs = mergeTypeDefs([
   mediasTypeDefs,
   routesTypeDefs,
   placesTypeDefs,
+  citiesTypeDefs,
 ]);
 const resolvers = mergeResolvers([
   usersResolvers,
   mediasResolvers,
   routesResolvers,
   placesResolvers,
+  citiesResolvers,
 ]);
 
 interface MyContext {

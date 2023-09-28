@@ -7,6 +7,8 @@ import { MongoRouteModel } from "../infrastructure/mongoModel/MongoRouteModel.js
 import { ApolloError } from "apollo-server-errors";
 import { getTrip } from "../infrastructure/osrm/GetTrip.js";
 import { getRoute } from "../infrastructure/osrm/GetRoute.js";
+import { MongoCityModel } from "../../cities/infrastructure/mongoModel/MongoCityModel.js";
+import CreateCityByEnglishNameUseCase from "../../cities/application/CreateCityByEnglishNameUseCase.js";
 
 interface PopulateRoutesDTO {
   place: string; // Normally will be the city, zone or neighborhood
@@ -136,6 +138,25 @@ export default async function PopulateRoutesUseCase({
               optimizedOrder: tripData.waypoints[index].waypoint_index,
             };
           });
+          const cities = stops
+            .map((stop) => stop?.media?.place.address.city)
+            .reduce<{ [key: string]: number }>((acc, str) => {
+              acc[str || ""] = (acc[str || ""] || 0) + 1;
+              return acc;
+            }, {});
+
+          const mostImportantCity = Object.keys(cities).reduce((a, b) =>
+            cities[a] > cities[b] ? a : b
+          );
+
+          let city = await MongoCityModel.findOne({
+            "translations.en": mostImportantCity,
+          });
+          let newCity;
+          if (!city) {
+            newCity = await CreateCityByEnglishNameUseCase(mostImportantCity);
+          }
+
           return MongoRouteModel.create({
             title: route.title,
             description: route.description,
@@ -145,6 +166,7 @@ export default async function PopulateRoutesUseCase({
             optimizedDuration: tripData.trips[0].duration,
             distance: routeData.routes[0].distance,
             optimizedDistance: tripData.trips[0].distance,
+            cityId: city ? city._id : newCity?._id,
           });
         }
       })

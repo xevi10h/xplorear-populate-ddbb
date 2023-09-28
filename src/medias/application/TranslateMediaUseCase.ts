@@ -37,7 +37,7 @@ export default async function TranslateMediaUseCase({
     throw new ApolloError("Media not found", "MEDIA_NOT_FOUND");
   }
   try {
-    const translator = new deepl.Translator(process.env.DEEPL_AUTH_KEY || "");
+    const translator = new deepl.Translator(process.env.DEEPL_AUTH_KEY!);
     const client = new PollyClient({
       region: "eu-west-1",
     });

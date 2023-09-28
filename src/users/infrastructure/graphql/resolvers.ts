@@ -37,7 +37,7 @@ interface UpdateUserInput {
     id: string;
     username?: string;
     name?: string;
-    photo?: string;
+    photoBase64?: string;
     language?: string;
   };
 }
@@ -67,7 +67,7 @@ const resolvers = {
     updateUser: async (
       parent: any,
       {
-        updateUserInput: { id, username, name, photo, language },
+        updateUserInput: { id, username, name, photoBase64, language },
       }: UpdateUserInput,
       { token }: { token: string }
     ) => {
@@ -77,7 +77,7 @@ const resolvers = {
         id,
         username,
         name,
-        photo,
+        photoBase64,
         language,
       });
     },

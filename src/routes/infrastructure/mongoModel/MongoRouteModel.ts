@@ -18,6 +18,7 @@ const RouteSchema = new Schema<IRoute>({
   optimizedDuration: { type: Number, required: true },
   distance: { type: Number, required: true },
   optimizedDistance: { type: Number, required: true },
+  cityId: { type: Schema.Types.ObjectId, ref: "cities" },
 });
 
 export const MongoRouteModel = model("routes", RouteSchema);

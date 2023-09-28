@@ -14,7 +14,7 @@ interface UpdateUserUseCaseDTO {
   id: string;
   username?: string;
   name?: string;
-  photo?: string;
+  photoBase64?: string;
   language?: string;
 }
 
@@ -23,7 +23,7 @@ export default async function UpdateUserUserCase({
   id,
   username,
   name,
-  photo,
+  photoBase64,
   language,
 }: UpdateUserUseCaseDTO) {
   if (tokenUserId !== id) {
@@ -34,10 +34,10 @@ export default async function UpdateUserUserCase({
       },
     });
   }
-  let newPhoto = photo;
-  if (photo) {
+  let photo;
+  if (photoBase64) {
     // Extract binary from the base64 string.
-    const base64Data = photo.replace(/^data:image\/\w+;base64,/, "");
+    const base64Data = photoBase64.replace(/^data:image\/\w+;base64,/, "");
     const dataBuffer = Buffer.from(base64Data, "base64");
     const imageResized = await sharp(dataBuffer)
       .resize(250, 250, {
@@ -59,14 +59,14 @@ export default async function UpdateUserUserCase({
     });
     console.log("commandToGet", commandToGet);
     const url = await getSignedUrl(client, commandToGet, { expiresIn: 3600 });
-    newPhoto = url;
+    photo = url;
   }
-  return MongoUserModel.findByIdAndUpdate(
+  return await MongoUserModel.findByIdAndUpdate(
     id,
     {
       username,
       name,
-      photo: newPhoto,
+      photo,
       language,
     },
     { new: true }

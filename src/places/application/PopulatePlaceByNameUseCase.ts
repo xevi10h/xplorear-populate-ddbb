@@ -15,11 +15,11 @@ export default async function PopulatePlaceByNameUseCase({
 }: PopulatePlaceByNameDTO) {
   try {
     const configuration = new Configuration({
-      organization: process.env.OPENAI_ORGANIZATION_ID || "",
-      apiKey: process.env.OPENAI_API_KEY || "",
+      organization: process.env.OPENAI_ORGANIZATION_ID!,
+      apiKey: process.env.OPENAI_API_KEY!,
     });
     const openai = new OpenAIApi(configuration);
-    const pexelsClient = createClient(process.env.PEXELS_API_KEY || "");
+    const pexelsClient = createClient(process.env.PEXELS_API_KEY!);
     const placeString = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
