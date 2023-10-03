@@ -58,7 +58,7 @@ export default async function LoginGoogleUserUseCase({
   if (user.photo) {
     const client = new S3Client({ region: "eu-west-1" });
     const commandToGet = new GetObjectCommand({
-      Bucket: "xplorear-profile-img",
+      Bucket: process.env.S3_BUCKET_IMAGES!,
       Key: user.id,
     });
     const url = await getSignedUrl(client, commandToGet, {
@@ -77,13 +77,13 @@ export default async function LoginGoogleUserUseCase({
     // Create a command to put a file into an S3 bucket.
     const commandToPut = new PutObjectCommand({
       Body: imageResized,
-      Bucket: "xplorear-profile-img",
+      Bucket: process.env.S3_BUCKET_IMAGES!,
       Key: user.id,
     });
     await client.send(commandToPut);
     // Create a command to get a file into an S3 bucket and then create a signed URL.
     const commandToGet = new GetObjectCommand({
-      Bucket: "xplorear-profile-img",
+      Bucket: process.env.S3_BUCKET_IMAGES!,
       Key: user.id,
     });
     const url = await getSignedUrl(client, commandToGet, {

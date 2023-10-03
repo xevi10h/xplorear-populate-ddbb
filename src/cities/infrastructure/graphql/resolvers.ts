@@ -16,7 +16,7 @@ const resolvers = {
       },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       const city = await CreateCityByEnglishNameUseCase(args.englishName);
       return city;
     },
@@ -27,7 +27,7 @@ const resolvers = {
       args: { textSearch: string },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       const cities = await GetCitiesByTextSearchUseCase(args.textSearch);
       return cities;
     },

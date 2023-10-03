@@ -12,4 +12,5 @@ export default interface IRoute {
   optimizedDistance: number;
   stops: IStop[];
   cityId: Types.ObjectId;
+  language: string;
 }

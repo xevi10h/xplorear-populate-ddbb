@@ -3,6 +3,7 @@ import LoginGoogleUserUseCase from "../../application/LoginGoogleUserUseCase.js"
 import LoginUserUseCase from "../../application/LoginUserUseCase.js";
 import RegisterUserUseCase from "../../application/RegisterUserUseCase.js";
 import UpdateUserUseCase from "../../application/UpdateUserUseCase.js";
+import GetUserByIdUseCase from "../../application/GetUserByIdUseCase.js";
 import { GraphQLScalarType, Kind } from "graphql";
 import { checkToken } from "../../../middleware/auth.js";
 
@@ -88,8 +89,8 @@ const resolvers = {
       args: { id: string },
       { token }: { token: string }
     ) => {
-      checkToken(token);
-      return MongoUserModel.findById(args.id);
+      // checkToken(token);
+      return GetUserByIdUseCase(args.id);
     },
   },
 

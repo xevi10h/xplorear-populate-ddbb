@@ -167,6 +167,7 @@ export default async function PopulateRoutesUseCase({
             distance: routeData.routes[0].distance,
             optimizedDistance: tripData.trips[0].distance,
             cityId: city ? city._id : newCity?._id,
+            language: "en-US",
           });
         }
       })

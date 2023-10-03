@@ -38,6 +38,9 @@ const typeDefs = gql`
     distance: Float!
     optimizedDistance: Float!
     stops: [Stop]!
+    stopsCount: Int!
+    cityId: ID!
+    language: String!
   }
 
   type Mutation {
@@ -52,6 +55,7 @@ const typeDefs = gql`
 
   type Query {
     route(id: ID!): Route
+    routes(cityId: ID!, language: String, textSearch: String): [Route]
   }
 `;
 export default typeDefs;
