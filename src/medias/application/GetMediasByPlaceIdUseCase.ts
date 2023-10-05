@@ -1,17 +1,13 @@
 import { MongoMediaModel } from "../infrastructure/mongoModel/MongoMediaModel.js";
 import IMedia from "../domain/IMedia.js";
-import {
-  GetObjectCommand,
-  ListObjectsV2Command,
-  S3Client,
-} from "@aws-sdk/client-s3";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export default async function GetMediasByPlaceIdUseCase(
   placeId: string,
   language: string
 ): Promise<IMedia[]> {
-  const query = {};
+  const query = { duration: { $exists: true } };
   if (placeId) {
     Object.assign(query, { "place._id": placeId });
   }

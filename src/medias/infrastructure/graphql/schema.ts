@@ -20,6 +20,7 @@ const typeDefs = gql`
     rating: Float!
     audioUrl: String!
     voiceId: String!
+    duration: Float
   }
 
   enum Language {

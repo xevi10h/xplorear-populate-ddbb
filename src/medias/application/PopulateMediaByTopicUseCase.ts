@@ -87,13 +87,7 @@ export default async function PopulateMediaByTopicUseCase({
       const response = await client.send(command);
       if (response?.SynthesisTask?.OutputUri) {
         mediaModel.audioUrl = response?.SynthesisTask?.OutputUri;
-        return MongoMediaModel.create({
-          ...mediaJSON,
-          audioUrl: response.SynthesisTask?.OutputUri,
-          language,
-          place,
-          voiceId,
-        });
+        return mediaModel.save();
       } else {
         throw new ApolloError(
           "Something went wrong while audio was being created",
