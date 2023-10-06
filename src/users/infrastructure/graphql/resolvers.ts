@@ -89,7 +89,7 @@ const resolvers = {
       args: { id: string },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       return GetUserByIdUseCase(args.id);
     },
   },

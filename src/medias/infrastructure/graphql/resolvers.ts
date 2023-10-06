@@ -31,7 +31,7 @@ const resolvers = {
       },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       return PopulateMediaByTopicUseCase({
         placeId: args.placeId,
         topic: args.topic,
@@ -81,7 +81,7 @@ const resolvers = {
       args: { placeId: string; language: string },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       return GetMediasByPlaceIdUseCase(args.placeId, args.language);
     },
   },

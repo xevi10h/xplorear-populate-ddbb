@@ -48,7 +48,7 @@ const resolvers = {
       args: { cityId: string; language: string; textSearch: string },
       { token }: { token: string }
     ) => {
-      // checkToken(token);
+      checkToken(token);
       const routes = await GetRoutesByFiltersUseCase(
         args.cityId,
         args.language || "en_US",
