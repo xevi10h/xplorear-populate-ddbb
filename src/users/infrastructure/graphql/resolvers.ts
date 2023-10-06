@@ -89,7 +89,8 @@ const resolvers = {
       args: { id: string },
       { token }: { token: string }
     ) => {
-      checkToken(token);
+      // checkToken(token);
+      console.log("PONG USER");
       return GetUserByIdUseCase(args.id);
     },
   },
