@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql";
-import IUser from "../domain/IUser";
-import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel";
+import IUser from "../domain/IUser.js";
+import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel.js";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 export default async function GetUserByIdUseCase(

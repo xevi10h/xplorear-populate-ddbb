@@ -8,6 +8,7 @@
     "compile": "npx tsc",
     "dev": "tsx watch --tsconfig ./tsconfig.json ./src/index.ts",
     "start": "npm run compile && nodemon ./dist/index.js",
+    "start:prod": "npm run compile && node ./dist/index.js",
     "build": "npm i"
   },
   "keywords": [],
