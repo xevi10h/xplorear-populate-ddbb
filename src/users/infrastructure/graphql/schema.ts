@@ -31,6 +31,10 @@ const typeDefs = gql`
     language: String
   }
 
+  input ResetPasswordInput {
+    emailOrUsername: String!
+  }
+
   type User {
     id: ID
     email: String!
@@ -48,6 +52,7 @@ const typeDefs = gql`
     loginUser(loginInput: LoginInput!): User
     loginGoogleUser(loginGoogleInput: LoginGoogleInput!): User
     updateUser(updateUserInput: UpdateUserInput!): User
+    resetPassword(resetPasswordInput: ResetPasswordInput!): Boolean
   }
 
   type Query {

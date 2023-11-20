@@ -4,6 +4,7 @@ import LoginUserUseCase from "../../application/LoginUserUseCase.js";
 import RegisterUserUseCase from "../../application/RegisterUserUseCase.js";
 import UpdateUserUseCase from "../../application/UpdateUserUseCase.js";
 import GetUserByIdUseCase from "../../application/GetUserByIdUseCase.js";
+import ResetPasswordUseCase from "../../application/ResetPasswordUseCase.js";
 import { GraphQLScalarType, Kind } from "graphql";
 import { checkToken } from "../../../middleware/auth.js";
 
@@ -40,6 +41,12 @@ interface UpdateUserInput {
     name?: string;
     photoBase64?: string;
     language?: string;
+  };
+}
+
+interface ResetPasswordInput {
+  resetPasswordInput: {
+    emailOrUsername: string;
   };
 }
 
@@ -80,6 +87,16 @@ const resolvers = {
         name,
         photoBase64,
         language,
+      });
+    },
+    resetPassword: async (
+      parent: any,
+      {
+        resetPasswordInput: { emailOrUsername },
+      }: ResetPasswordInput
+    ) => {
+      return ResetPasswordUseCase({
+        emailOrUsername,
       });
     },
   },

@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        - NODE_ENV=development
+    command: ["npm", "run", "dev"]
+    ports:
+      - "4000:4000"
+      - "9229:9229"
+      - "9230:9230"
+    volumes:
+      - ./src/:/opt/app/src
+      - notused:/opt/app/src/node_modules
+    environment:
+      - NODE_ENV=development
+    healthcheck:
+      disable: true
+
+volumes:
+  notused:
