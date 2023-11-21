@@ -13,13 +13,14 @@ USER node
 
 WORKDIR /opt/app
 
-COPY --chown=node:node package.json package-lock.json* tsconfig.json ./
+COPY --chown=node:node package.json package-lock.json* tsconfig.json healthcheck.js ./
 RUN npm ci && npm cache clean --force
 ENV PATH /opt/app/node_modules/.bin:$PATH
 
-# HEALTHCHECK --interval=30s CMD node healthcheck.js
-
 RUN mkdir src
 COPY --chown=node:node ./src ./src
+
+HEALTHCHECK --interval=10s \
+    CMD node healthcheck.js
 
 CMD [ "npm", "run", "prod" ]
