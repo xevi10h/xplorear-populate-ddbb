@@ -5,7 +5,7 @@ const userSchema = new Schema<IUser>({
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   hashedPassword: { type: String },
-  passwordExpiresAt: { type: Date },
+  isTemporalPassword: { type: Boolean, default: false },
   createdAt: { type: Date, required: true },
   photo: {
     type: String,

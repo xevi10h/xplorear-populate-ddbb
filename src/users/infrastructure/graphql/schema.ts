@@ -39,8 +39,8 @@ const typeDefs = gql`
     id: ID
     email: String!
     username: String!
+    isTemporalPassword: Boolean
     createdAt: DateTime!
-    passwordExpiresAt: DateTime
     googleId: String
     token: String
     language: String

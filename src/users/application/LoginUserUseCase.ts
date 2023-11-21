@@ -24,13 +24,6 @@ export default async function LoginUserUseCase({
     user.hashedPassword &&
     (await bcrypt.compare(password, user.hashedPassword))
   ) {
-    // Check if the password is expired
-    if (user.passwordExpiresAt && user.passwordExpiresAt < new Date()) {
-      throw new ApolloError(
-        "Password expired, please reset your password",
-        "PASSWORD_EXPIRED"
-      );
-    }
     // Create a new JWT
     const token = jwt.sign(
       {

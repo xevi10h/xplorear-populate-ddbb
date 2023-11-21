@@ -9,7 +9,7 @@ export default interface IUser {
   name?: string;
   photo?: string;
   hashedPassword?: string;
-  passwordExpiresAt?: Date;
+  isTemporalPassword?: boolean;
   googleId?: string;
   token?: string;
   language: string;

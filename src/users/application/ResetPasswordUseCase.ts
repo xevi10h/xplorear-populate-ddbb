@@ -30,7 +30,7 @@ export default async function ResetPasswordUseCase({
     user.id,
     {
       hashedPassword: newTempEncryptedPassword,
-      passwordExpiresAt: new Date(Date.now() + 300000), // 5 mins
+      isTemporalPassword: true,
     },
     { new: true }
   );
