@@ -45,6 +45,7 @@ export default async function ResetPasswordUseCase({
     );
   } catch (e) {
     console.error("Failed to send email.");
+    console.error(e);
     return false;
   }
   return true;

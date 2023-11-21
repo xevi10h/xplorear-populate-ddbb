@@ -11,11 +11,30 @@ services:
       - "9230:9230"
     volumes:
       - ./src/:/opt/app/src
-      - notused:/opt/app/src/node_modules
-    environment:
-      - NODE_ENV=development
+    env_file: .env
     healthcheck:
-      disable: true
+      disable: true  
+    depends_on:
+      mongo:
+        condition: service_healthy
+  
+  mongo:
+    image: mongo:6
+    command: mongod --quiet --logpath /dev/null
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test
+      - MONGO_INITDB_ROOT_PASSWORD=test
+      - MONGO_INITDB_DATABASE=test
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/test --quiet` ] && echo 0 || echo 1"
+      interval: 5s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
 
 volumes:
-  notused:
+  mongo_data:
