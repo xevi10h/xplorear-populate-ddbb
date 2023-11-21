@@ -21,8 +21,8 @@ export default async function ResetPasswordUseCase({
   
   // Send reset password email using SES
   const sesClient = new SESClient({ region: "eu-west-1" });
-  const toAddress = "pau.vilella@chartboost.com" // SHOULD BE user.email;
-  const fromAddress = "pau.vilella.st+sestest@gmail.com"
+  const toAddress = user.email
+  const fromAddress = "no-reply@monum.es"
   const newTempPassword = crypto.randomBytes(12).toString('hex');
   const newTempEncryptedPassword = await bcrypt.hash(newTempPassword, 10);
   user.hashedPassword = newTempEncryptedPassword;
