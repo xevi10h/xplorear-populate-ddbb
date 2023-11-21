@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-mongoose.connect(process.env.MONGODB_URI || "");
+mongoose.connect(process.env.MONGODB_URI || "mongodb://test:test@mongo:27017/");
 
 const connection = mongoose.connection;
 
