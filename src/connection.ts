@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
-mongoose.connect(
-  process.env.MONGODB_URI ||
-    "mongodb+srv://xploreartech:XA229er147@cluster0.b0gluyp.mongodb.net/"
-);
+mongoose.connect(process.env.MONGODB_URI || "mongodb://test:test@mongo:27017/");
 
 const connection = mongoose.connection;
 
