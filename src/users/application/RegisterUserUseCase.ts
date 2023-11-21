@@ -42,6 +42,7 @@ export default async function RegisterUserUseCase({
     username,
     email: email.toLowerCase(),
     hashedPassword: encryptedPassword,
+    passwordExpiresAt: new Date("2999-01-01"),
     createdAt: new Date(),
     language: language || "en_US",
   });

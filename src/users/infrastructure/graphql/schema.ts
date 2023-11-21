@@ -40,6 +40,7 @@ const typeDefs = gql`
     email: String!
     username: String!
     createdAt: DateTime!
+    passwordExpiresAt: DateTime
     googleId: String
     token: String
     language: String

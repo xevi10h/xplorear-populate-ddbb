@@ -1,6 +1,8 @@
 import { MongoUserModel } from "../infrastructure/mongoModel/MongoUserModel.js";
 import { ApolloError } from "apollo-server-errors";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import crypto from "crypto";
+import bcrypt from "bcryptjs";
 
 interface ResetPasswordDTO {
   emailOrUsername: string;
@@ -21,6 +23,60 @@ export default async function ResetPasswordUseCase({
   const sesClient = new SESClient({ region: "eu-west-1" });
   const toAddress = "pau.vilella@chartboost.com" // SHOULD BE user.email;
   const fromAddress = "pau.vilella.st+sestest@gmail.com"
+  const newTempPassword = crypto.randomBytes(12).toString('hex');
+  const newTempEncryptedPassword = await bcrypt.hash(newTempPassword, 10);
+  user.hashedPassword = newTempEncryptedPassword;
+  await MongoUserModel.findByIdAndUpdate(
+    user.id,
+    {
+      hashedPassword: newTempEncryptedPassword,
+      passwordExpiresAt: new Date(Date.now() + 300000), // 5 mins
+    },
+    { new: true }
+  );
+  const body = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Reset</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    p {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Your password reset request!</h1>
+    <p>Here's your new password: <b>${newTempPassword}</b>.<br>
+    You'll be prompted to change it on the next login!</p>
+  </div>
+</body>
+</html>
+  `
   try {
     await sesClient.send(new SendEmailCommand({
       Destination: {
@@ -31,12 +87,12 @@ export default async function ResetPasswordUseCase({
         Body: {
           Html: {
             Charset: "UTF-8",
-            Data: "<html><body><h1>RESET YOUR PASSWORD TEST</h1></body></html>",
+            Data: body,
           }
         },
         Subject: {
           Charset: "UTF-8",
-          Data: "Reset your password email",
+          Data: "MONUM: Password reset request",
         },
       },
       Source: fromAddress,
