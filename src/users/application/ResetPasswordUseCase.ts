@@ -8,7 +8,7 @@ interface ResetPasswordDTO {
 
 export default async function ResetPasswordUseCase({
   emailOrUsername, 
-}: ResetPasswordDTO): Promise<Boolean> {
+}: ResetPasswordDTO): Promise<Boolean | null> {
   // See if the user exists with the email
   const user = await MongoUserModel.findOne({
     $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
@@ -44,9 +44,11 @@ export default async function ResetPasswordUseCase({
     })
     );
   } catch (e) {
-    console.error("Failed to send email.");
     console.error(e);
-    return false;
+    throw new ApolloError(
+      `Failed to send email with error: ${e}`,
+      `FAILED_TO_SEND_EMAIL`
+    );
   }
   return true;
 }

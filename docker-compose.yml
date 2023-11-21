@@ -11,6 +11,8 @@ services:
       - "9230:9230"
     volumes:
       - ./src/:/opt/app/src
+      - ~/.aws/monum/dev_credentials:/home/node/.aws/credentials:ro
+      - ~/.aws/monum/dev_config:/home/node/.aws/config:ro
     env_file: .env
     healthcheck:
       disable: true  
